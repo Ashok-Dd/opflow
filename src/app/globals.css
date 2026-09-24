@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+@theme {
+  /* Paper & ink — the page is set like a printed OPD form, not a SaaS dashboard. */
+  --color-paper: #f4f1e8;
+  --color-paper-deep: #e8e3d4;
+  --color-ink: #17221d;
+  --color-ink-soft: #4b574f;
+  --color-rule: #d5cfbd;
+
+  /* Hospital greens, taken from the logo tile and its ECG line. */
+  --color-forest: #0b3a2e;
+  --color-pine: #0f5140;
+  --color-fern: #1a7550;
+  --color-leaf: #5cc27f;
+  --color-mint: #dcece1;
+
+  /* Signals */
+  --color-amber: #946300;
+  --color-led: #ffb21e;
+  --color-alarm: #c4291d;
+
+  --animate-grow-x: grow-x 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-seat-pop: seat-pop 420ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  --animate-flip-in: flip-in 380ms ease-out both;
+}
+
+@keyframes grow-x {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes seat-pop {
+  0% { transform: scale(0.3); }
+  100% { transform: scale(1); }
+}
+
+@keyframes flip-in {
+  0% { transform: translateY(-40%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4.5rem;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+::selection {
+  background: var(--color-leaf);
+  color: var(--color-forest);
+}
+
+/* Diagonal hatching, used for "time spent waiting" and walk-in seats. */
+.hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    currentColor 0 1.5px,
+    transparent 1.5px 6px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* Long-form legal text */
+.legal section + section { margin-top: 3rem; }
+.legal h2 {
+  font-family: var(--font-serif);
+  font-size: 1.65rem;
+  line-height: 1.2;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.legal h3 { font-weight: 600; margin: 1.5rem 0 0.5rem; }
+.legal p, .legal li { color: var(--color-ink-soft); line-height: 1.75; }
+.legal p + p, .legal ul + p, .legal p + ul, .legal p + table, .legal table + p { margin-top: 0.9rem; }
+.legal ul { list-style: disc; padding-left: 1.25rem; }
+.legal li + li { margin-top: 0.35rem; }
+.legal li::marker { color: var(--color-fern); }
+.legal strong { color: var(--color-ink); font-weight: 600; }
+.legal a { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-fern); text-underline-offset: 3px; }
+.legal table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.legal th { text-align: left; font-weight: 600; border-bottom: 1.5px solid var(--color-ink); padding: 0.6rem 0.75rem 0.6rem 0; }
+.legal td { border-bottom: 1px solid var(--color-rule); padding: 0.75rem 0.75rem 0.75rem 0; vertical-align: top; color: var(--color-ink-soft); }
+.legal .note { border-left: 3px solid var(--color-fern); background: var(--color-mint); padding: 0.9rem 1.1rem; color: var(--color-ink); }
+.legal .warn { border-left: 3px solid var(--color-alarm); background: #fbe9e7; padding: 0.9rem 1.1rem; color: var(--color-ink); }
