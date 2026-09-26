@@ -16,7 +16,7 @@ export default function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#0b3a2e",
+          background: "#1f7a5c",
           color: "#f4f1e8",
           padding: "72px 80px",
           fontFamily: "Georgia, serif",
@@ -29,7 +29,7 @@ export default function Image() {
               height: 52,
               borderRadius: 12,
               background: "#f4f1e8",
-              color: "#0b3a2e",
+              color: "#1f7a5c",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -44,7 +44,7 @@ export default function Image() {
 
         <div style={{ display: "flex", flexDirection: "column", fontSize: 84, lineHeight: 1.05 }}>
           <span>Know when the doctor</span>
-          <span style={{ color: "#5cc27f", fontStyle: "italic" }}>will see you.</span>
+          <span style={{ color: "#8ed6a6", fontStyle: "italic" }}>will see you.</span>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -52,7 +52,7 @@ export default function Image() {
             {[0, 1, 2, 3].map((w) => (
               <div key={w} style={{ display: "flex", gap: 10 }}>
                 {people.slice(w * 8, w * 8 + 8).map((p) => (
-                  <div key={p} style={{ width: 16, height: 26, borderRadius: "8px 8px 2px 2px", background: "#5cc27f" }} />
+                  <div key={p} style={{ width: 16, height: 26, borderRadius: "8px 8px 2px 2px", background: "#8ed6a6" }} />
                 ))}
               </div>
             ))}
