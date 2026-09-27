@@ -1,7 +1,7 @@
 /**
  * Business and legal details used across the site, the legal pages and structured data.
  *
- * TODO(before launch): replace every value in [square brackets]. Razorpay's website review and the
+ * TODO(before launch): replace every value in [square brackets]. Cashfree's website review and the
  * IT Rules / DPDP Act need a real legal entity, address, support contact and grievance officer.
  */
 export const site = {
@@ -26,7 +26,7 @@ export const site = {
   platformFeePercent: 10, // OPflow's share of each consultation fee; the rest is settled to the doctor/hospital
   rescheduleCutoff: "2 hours before your window starts",
 
-  legalUpdated: "24 September 2026",
+  legalUpdated: "28 September 2026",
 } as const;
 
 export const legalPages = [

@@ -7,7 +7,7 @@ const steps = [
   { title: "Open their profile", text: "Qualifications, fee, hospital, OPD days and which windows still have room." },
   { title: "Pick a date and a window", text: "Full windows are greyed out. Take the next one with space." },
   { title: "Say who's coming", text: "You, your child or a parent. Just the details the clinic needs." },
-  { title: "Pay online", text: "Through Razorpay. The booking is confirmed only after we verify the payment on our side." },
+  { title: "Pay online", text: "Through Cashfree. The booking is confirmed only after we verify the payment on our side." },
   { title: "Get your slip", text: "Token number, window and the time to reach the hospital." },
   { title: "Follow the queue", text: "Delays and your turn, live, until you walk into the room." },
 ];

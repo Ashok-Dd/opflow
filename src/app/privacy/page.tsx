@@ -57,7 +57,7 @@ const sections: LegalSection[] = [
           </li>
           <li>
             <strong>Payment data:</strong> amount, status, order and transaction references. Card, UPI and bank
-            details are entered directly with our payment gateway (Razorpay) and are <strong>not stored by OPflow</strong>.
+            details are entered directly with our payment gateway (Cashfree Payments) and are <strong>not stored by OPflow</strong>.
           </li>
           <li>
             <strong>Search data:</strong> specialties, symptoms or hospitals you search for. Symptom search is used only
@@ -135,7 +135,7 @@ const sections: LegalSection[] = [
         <p>We do not sell personal data. We share it only as needed to run OPflow:</p>
         <ul>
           <li><strong>Healthcare Providers</strong> you book with, and their authorised staff: booking and queue details.</li>
-          <li><strong>Payment gateway</strong> (Razorpay): to process payments and refunds.</li>
+          <li><strong>Payment gateway</strong> (Cashfree Payments): to process payments and refunds, and to pay doctors their share.</li>
           <li>
             <strong>Service providers</strong> acting on our instructions: cloud hosting and databases, email delivery,
             SMS/OTP and push notifications, maps and analytics. They are bound by contracts to protect the data.

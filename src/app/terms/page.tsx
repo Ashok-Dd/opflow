@@ -94,7 +94,7 @@ const sections: LegalSection[] = [
           the amount you pay.
         </li>
         <li>
-          Payments are processed by our payment gateway partner (Razorpay). OPflow does not store your card, UPI or
+          Payments are processed by our payment gateway partner (Cashfree Payments). OPflow does not store your card, UPI or
           bank credentials.
         </li>
         <li>All prices are in Indian Rupees (INR) and include applicable taxes unless stated otherwise.</li>
