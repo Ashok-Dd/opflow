@@ -13,8 +13,10 @@ export const site = {
   legalName: "[Registered company name] Private Limited",
   cin: "[Company CIN]",
   address: "[Registered office address], [City], Andhra Pradesh [PIN], India",
-  email: "[support@your-domain.in]",
+  email: "info@opflow.in",
   phone: "[+91 00000 00000]",
+  // The OPflow app in the browser (works on iPhone and Android) until the store listings are live.
+  webAppUrl: "https://opflow-alpha.vercel.app",
   supportHours: "Monday to Saturday, 9 AM – 7 PM IST",
   grievanceOfficer: {
     name: "[Grievance Officer name]",

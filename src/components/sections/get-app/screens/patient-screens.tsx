@@ -158,7 +158,7 @@ export function PatientLive() {
 
       <div className="mt-auto grid grid-cols-2 gap-2 text-center text-[12px] font-semibold">
         <span className="rounded-[10px] bg-pine py-3 text-white">Directions</span>
-        <span className="rounded-[10px] bg-white py-3 shadow-[0_0_0_1px_#e3e6e2]">Call reception</span>
+        <span className="rounded-[10px] bg-white py-3 shadow-[0_0_0_1px_#e3e6e2]">Call hospital</span>
       </div>
     </div>
   );

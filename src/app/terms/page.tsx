@@ -102,6 +102,31 @@ const sections: LegalSection[] = [
     ),
   },
   {
+    id: "doctor-suggestions",
+    title: "Doctor suggestions (Find Your Right Doctor)",
+    body: (
+      <ul>
+        <li>
+          For a one-time fee shown before you pay (currently ₹99), OPflow suggests up to three doctors of the type you
+          choose near your area, with the reasons for each. The suggestion is saved in your account; it is not updated
+          later.
+        </li>
+        <li>
+          Suggestions are based on published criteria: qualifications, experience, training, areas of practice and
+          private feedback from patients who visited. Doctors cannot pay for, ask for or see their place in suggestions.
+        </li>
+        <li>
+          A suggestion is a recommendation, <strong>not a guarantee of treatment outcome</strong>, and not medical
+          advice. The consultation itself is between you and the doctor.
+        </li>
+        <li>
+          You are asked to pay only when there are doctors to suggest near you. If none are left when your payment
+          arrives, the fee is refunded automatically.
+        </li>
+      </ul>
+    ),
+  },
+  {
     id: "providers",
     title: "Terms for doctors, clinics and hospitals",
     body: (

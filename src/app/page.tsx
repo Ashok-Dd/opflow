@@ -2,6 +2,7 @@ import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { Hero } from "@/components/sections/hero/hero";
 import { FindCare } from "@/components/sections/find-care/find-care";
+import { RightDoctor } from "@/components/sections/right-doctor/right-doctor";
 import { Journey } from "@/components/sections/journey/journey";
 import { Windows } from "@/components/sections/windows/windows";
 import { LiveQueue } from "@/components/sections/live-queue/live-queue";
@@ -45,6 +46,7 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <FindCare />
+        <RightDoctor />
         <Journey />
         <Windows />
         <LiveQueue />

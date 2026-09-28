@@ -20,11 +20,11 @@ const portals: Record<"patient" | "doctor", { label: string; screens: Screen[] }
     ],
   },
   doctor: {
-    label: "Doctor & clinic portal",
+    label: "Doctor portal",
     screens: [
       { title: "Today's OPD", text: "Who's in, who's next, and one big button to call them.", Component: DoctorToday },
       { title: "Update delay", text: "One tap, and everyone waiting knows.", Component: DoctorDelay },
-      { title: "Schedule & capacity", text: "Days, hours, online and walk-in numbers.", Component: DoctorSchedule },
+      { title: "Schedule & capacity", text: "Days, hours, and how many patients each hour.", Component: DoctorSchedule },
     ],
   },
 };

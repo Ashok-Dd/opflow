@@ -23,7 +23,19 @@ export const faqs = [
   },
   {
     q: "I'm a doctor. What does it take to get started?",
-    a: "Download the app and sign in to the doctor portal. After we verify your qualifications and registration, you set your OPD days, hours and capacity, and patients can start booking.",
+    a: "Write to info@opflow.in or call us. The OPflow team verifies your qualifications and medical registration and sets up your account, then gives you an OPD ID and password. You set your OPD days, hours and patients per hour in the app or on the doctor website, and patients can start booking.",
+  },
+  {
+    q: "How does OPflow suggest the right doctor?",
+    a: "Choose the type of doctor you need and pay ₹99 once. OPflow suggests up to three doctors near you, based on their qualifications, experience, training, areas of practice and private feedback from patients who visited them, and explains why for each one. Doctors can never pay to be suggested. You're only asked to pay when there are doctors to suggest, and it's a recommendation, not a guarantee of treatment outcome.",
+  },
+  {
+    q: "How do I pay?",
+    a: "Online, through our payment partner Cashfree Payments: UPI, cards or net banking. Your booking is confirmed only after we check the payment on our side. If a payment fails but money is taken, it comes back automatically.",
+  },
+  {
+    q: "I use an iPhone. Can I use OPflow?",
+    a: "Yes. Open OPflow in Safari from the 'Open OPflow' button on this page. It works like the app, including payments and the live line. OPflow works in English and Telugu.",
   },
   {
     q: "Where is OPflow available?",

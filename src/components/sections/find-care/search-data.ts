@@ -3,13 +3,13 @@ export type Hospital = { name: string; area: string; km: string; status: string 
 
 export const doctors: Doctor[] = [
   { name: "Dr. Meera Iyer", specialty: "General Medicine", hospital: "City Care Hospital", next: "Today 11 AM – 12 PM" },
-  { name: "Dr. Suresh Babu", specialty: "General Medicine", hospital: "Lakeview Multispeciality", next: "Today 12 – 1 PM" },
+  { name: "Dr. Suresh Babu", specialty: "General Medicine", hospital: "Sunrise Children's Clinic", next: "Today 12 – 1 PM" },
   { name: "Dr. Arjun Rao", specialty: "Pediatrics", hospital: "Sunrise Children's Clinic", next: "Today 5 – 6 PM" },
   { name: "Dr. Sameer Khan", specialty: "ENT", hospital: "Sri Sai Eye & ENT Centre", next: "Tomorrow 10 – 11 AM" },
   { name: "Dr. Lavanya Rao", specialty: "ENT", hospital: "City Care Hospital", next: "Today 12 – 1 PM" },
   { name: "Dr. Kavya Reddy", specialty: "Gynecology & Obstetrics", hospital: "City Care Hospital", next: "Today 12 – 1 PM" },
-  { name: "Dr. Farah Siddiqui", specialty: "Dermatology", hospital: "Lakeview Multispeciality", next: "Today 4 – 5 PM" },
-  { name: "Dr. Rahul Varma", specialty: "Orthopedics", hospital: "Lakeview Multispeciality", next: "Tomorrow 9 – 10 AM" },
+  { name: "Dr. Farah Siddiqui", specialty: "Dermatology", hospital: "City Care Hospital", next: "Today 4 – 5 PM" },
+  { name: "Dr. Rahul Varma", specialty: "Orthopedics", hospital: "City Care Hospital", next: "Tomorrow 9 – 10 AM" },
   { name: "Dr. Priya Nair", specialty: "Ophthalmology", hospital: "Sri Sai Eye & ENT Centre", next: "Today 11 AM – 12 PM" },
   { name: "Dr. Venkat Raju", specialty: "Cardiology", hospital: "City Care Hospital", next: "Thu 10 – 11 AM" },
 ];
@@ -17,7 +17,6 @@ export const doctors: Doctor[] = [
 export const hospitals: Hospital[] = [
   { name: "City Care Hospital", area: "Bhimavaram", km: "2.1", status: "OPD open until 1 PM" },
   { name: "Sunrise Children's Clinic", area: "Tanuku", km: "3.4", status: "OPD opens 5 PM" },
-  { name: "Lakeview Multispeciality", area: "Eluru Road", km: "5.0", status: "OPD open until 2 PM" },
   { name: "Sri Sai Eye & ENT Centre", area: "Main Bazaar", km: "6.8", status: "OPD open until 1 PM" },
 ];
 

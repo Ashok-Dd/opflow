@@ -11,8 +11,9 @@ export function GetApp() {
             <>
               <Heading>One app. A portal for patients, another for doctors.</Heading>
               <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-ink-soft">
-                Download OPflow once. Sign in with your mobile number as a patient, or as a doctor or clinic staff,
-                and the app opens the portal that&apos;s yours.
+                Patients sign in with their mobile number. Doctors sign in with the OPD ID and password the OPflow
+                team gives them, in the same app or on the OPflow doctor website from a computer. OPflow works in
+                English and Telugu.
               </p>
             </>
           }

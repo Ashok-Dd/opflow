@@ -8,6 +8,7 @@ import { SectionLink } from "./section-link";
 
 const links = [
   { id: "find", label: "Find a doctor" },
+  { id: "right-doctor", label: "Right doctor" },
   { id: "windows", label: "How it works" },
   { id: "queue", label: "Live queue" },
   { id: "urgent", label: "Urgent care" },

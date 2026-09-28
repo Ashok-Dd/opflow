@@ -4,10 +4,10 @@ const card = "rounded-[10px] bg-white shadow-[0_0_0_1px_#e3e6e2]";
 
 export function DoctorToday() {
   const queue = [
-    ["16", "Lakshmi P.", "Arrived", "text-fern"],
-    ["17", "Walk-in · Suresh", "Arrived", "text-fern"],
-    ["18", "Ravi K.", "On the way", "text-amber"],
-    ["19", "Anjali M.", "Booked", "text-ink-soft"],
+    ["16", "Lakshmi P.", "Waiting", "text-fern"],
+    ["17", "Suresh V.", "Waiting", "text-fern"],
+    ["18", "Ravi K.", "Not here yet", "text-amber"],
+    ["19", "Anjali M.", "Booked · 11 AM", "text-ink-soft"],
   ] as const;
   return (
     <div className="flex h-full flex-col px-4 pt-3 pb-4 text-[13px]">
@@ -120,23 +120,23 @@ export function DoctorSchedule() {
 
       <div className={`${card} mt-2 divide-y divide-[#e3e6e2]`}>
         {[
-          ["Online bookings", "24"],
-          ["Walk-in places", "10"],
-          ["Emergency", "As needed"],
+          ["Patients each hour", "6"],
+          ["Bookings open", "14 days ahead"],
+          ["Emergency patients", "When you switch it on"],
         ].map(([l, v]) => (
           <div key={l} className="flex items-center justify-between px-3 py-3">
             <span>{l}</span>
             <span className="flex items-center gap-2">
-              {v !== "As needed" && <span className="grid size-5 place-items-center rounded-full bg-[#f1f3f0] text-ink-soft">−</span>}
-              <span className="font-mono font-semibold">{v}</span>
-              {v !== "As needed" && <span className="grid size-5 place-items-center rounded-full bg-[#f1f3f0] text-ink-soft">+</span>}
+              {l === "Patients each hour" && <span className="grid size-5 place-items-center rounded-full bg-[#f1f3f0] text-ink-soft">−</span>}
+              <span className={`font-mono font-semibold ${v.length > 6 ? "text-[10.5px]" : ""}`}>{v}</span>
+              {l === "Patients each hour" && <span className="grid size-5 place-items-center rounded-full bg-[#f1f3f0] text-ink-soft">+</span>}
             </span>
           </div>
         ))}
       </div>
 
       <div className="mt-3 rounded-[10px] bg-mint p-3 text-[11px] text-pine">
-        4 windows of 6 online patients each. Walk-ins are added to the queue at reception.
+        4 hours, 6 patients each hour. You can change the numbers any day.
       </div>
 
       <div className="mt-auto rounded-[10px] bg-ink py-3 text-center font-semibold text-white">Save schedule</div>

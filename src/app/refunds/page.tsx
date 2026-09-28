@@ -53,6 +53,12 @@ const sections: LegalSection[] = [
             <td>You were charged twice for one booking</td>
             <td>Duplicate amount refunded automatically</td>
           </tr>
+          <tr>
+            <td>You paid for a doctor suggestion, but no doctor was left to suggest</td>
+            <td>
+              <strong>100% refund</strong> of the suggestion fee, automatically
+            </td>
+          </tr>
         </tbody>
       </table>
     ),

@@ -63,7 +63,19 @@ const sections: LegalSection[] = [
             <strong>Search data:</strong> specialties, symptoms or hospitals you search for. Symptom search is used only
             to suggest a type of doctor.
           </li>
-          <li><strong>Location:</strong> only if you allow it, to show nearby hospitals and distances. You can search by city or PIN code instead.</li>
+          <li>
+            <strong>Location:</strong> only if you allow it: your area, from your phone&apos;s location, to show doctors
+            and hospitals near you and distances, and to find doctors near you for a doctor suggestion.
+          </li>
+          <li>
+            <strong>Doctor suggestions:</strong> when you ask for one, the type of doctor, your area, your agreement to
+            the terms of the suggestion, the payment and the doctors suggested to you.
+          </li>
+          <li>
+            <strong>Visit feedback:</strong> if you rate a finished visit, the rating (1 to 5) and your optional note.
+            Only OPflow sees it; we use it to choose the doctors we suggest. It is never shown to the doctor or to other
+            patients.
+          </li>
           <li><strong>Support data:</strong> messages and call records when you contact us or a clinic through OPflow.</li>
         </ul>
 
@@ -73,7 +85,6 @@ const sections: LegalSection[] = [
           <li>Verification documents you submit, which are used only to verify your profile.</li>
           <li>Hospital or clinic details, OPD schedules, capacity, fees, delays and availability you publish.</li>
           <li>Bank or settlement details, if you receive payouts through OPflow.</li>
-          <li>Staff accounts (for example, receptionists) and the actions they take in the doctor portal.</li>
         </ul>
 
         <h3>Collected automatically</h3>

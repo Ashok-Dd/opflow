@@ -15,8 +15,8 @@ const categories = [
 
 const nearby = [
   { name: "Dr. Arjun Rao", role: "Pediatrician · Sunrise Children's Clinic", status: "Available now", km: "2.1", tone: "text-fern" },
-  { name: "Lakeview Multispeciality", role: "Emergency department · 24 hours", status: "Open now", km: "5.0", tone: "text-fern" },
-  { name: "Dr. Kavya Reddy", role: "Obstetrics · City Care Hospital", status: "On call until 11 PM", km: "2.4", tone: "text-amber" },
+  { name: "City Care Hospital", role: "Emergency department · 24 hours", status: "Open now", km: "2.1", tone: "text-fern" },
+  { name: "Dr. Kavya Reddy", role: "Obstetrics · City Care Hospital", status: "Available until 11 PM", km: "2.4", tone: "text-amber" },
 ];
 
 export function UrgentCare() {
@@ -30,8 +30,10 @@ export function UrgentCare() {
             <Heading>When it can&apos;t wait for an OPD, the app shows what&apos;s open right now.</Heading>
           </div>
           <p className="text-[17px] leading-relaxed text-ink-soft lg:col-span-5 lg:col-start-8 lg:pt-10">
-            Pick what&apos;s happening and OPflow lists doctors and hospitals near you that have said they&apos;re
-            available, with distance, a call button and directions. It doesn&apos;t diagnose. It gets you to care.
+            Pick what&apos;s happening and OPflow shows first-aid steps from WHO guidance (they work without
+            internet), doctors near you who have said they&apos;re available now, and 24-hour hospitals, with distance,
+            a call button and directions. You can book an emergency consultation and go to the top of the doctor&apos;s
+            line. It doesn&apos;t diagnose. It gets you to care.
           </p>
         </div>
 
@@ -51,8 +53,8 @@ export function UrgentCare() {
           <div className="lg:col-span-4">
             <p className="font-serif text-[1.7rem] leading-tight">Availability is declared, never guessed.</p>
             <p className="mt-4 text-ink-soft">
-              A doctor appears here only if they or their hospital have said so: available now, until a set time,
-              on call, or at the hospital.
+              A doctor appears here only if they have switched it on themselves: available now, or available until a
+              set time.
             </p>
           </div>
           <div className="lg:col-span-8">

@@ -15,7 +15,7 @@ const demo = [
   { text: "Chest pain", hint: "something urgent" },
 ];
 
-const tryThese = ["Skin rash", "Pediatrics", "Lakeview", "Back pain", "Dr. Priya"];
+const tryThese = ["Skin rash", "Pediatrics", "City Care", "Back pain", "Dr. Priya"];
 
 export function SearchDemo() {
   const [ref, inView] = useInView<HTMLDivElement>(0.35);
