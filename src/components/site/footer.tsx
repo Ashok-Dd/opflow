@@ -43,7 +43,6 @@ export function Footer() {
             </p>
             <address className="mt-5 space-y-1 text-sm not-italic text-mint/80">
               <a href={`mailto:${site.email}`} className="block hover:text-white">{site.email}</a>
-              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="block hover:text-white">{site.phone}</a>
             </address>
             <StoreButtons tone="light" className="mt-6" />
           </div>
@@ -83,7 +82,7 @@ export function Footer() {
             <a href="tel:108" className="text-paper underline underline-offset-2">108</a>.
           </p>
           <p className="shrink-0">
-            © {new Date().getFullYear()} {site.legalName}
+            © {new Date().getFullYear()} {site.name}
           </p>
         </div>
       </Container>

@@ -17,7 +17,6 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "Organization",
     name: site.name,
-    legalName: site.legalName,
     url: site.url,
     logo: `${site.url}/opflow-logo.png`,
     email: site.email,

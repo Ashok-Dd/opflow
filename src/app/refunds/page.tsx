@@ -193,7 +193,7 @@ const sections: LegalSection[] = [
     body: (
       <p>
         If a refund hasn&apos;t reached you within the times above, write to <Mail to={site.email} /> with your booking
-        number, or contact our Grievance Officer at <Mail to={site.grievanceOfficer.email} />.
+        number. If it still isn&apos;t resolved, write again with “Grievance” in the subject.
       </p>
     ),
   },

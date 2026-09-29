@@ -15,8 +15,7 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          OPflow is operated by <strong>{site.legalName}</strong> (CIN {site.cin}), registered at {site.address}{" "}
-          (“OPflow”, “we”, “us”). For the purposes of the Digital Personal Data Protection Act, 2023 (“DPDP Act”),
+          This policy explains how <strong>OPflow</strong> (“OPflow”, “we”, “us”) handles personal data. For the purposes of the Digital Personal Data Protection Act, 2023 (“DPDP Act”),
           we are the <strong>Data Fiduciary</strong> for the personal data described in this policy.
         </p>
         <p>
@@ -227,7 +226,7 @@ const sections: LegalSection[] = [
           <li>Ask us to correct, complete, update or erase your personal data.</li>
           <li>Withdraw consent you have given.</li>
           <li>Nominate another person to exercise your rights in case of death or incapacity.</li>
-          <li>Have your grievances addressed by our Grievance Officer, and then by the Data Protection Board of India.</li>
+          <li>Have your complaints addressed by us (write to info@opflow.in), and then by the Data Protection Board of India.</li>
         </ul>
         <p>
           To exercise these rights, use the app settings or write to <Mail to={site.email} />. We may need to verify
@@ -270,19 +269,13 @@ const sections: LegalSection[] = [
   },
   {
     id: "grievance",
-    title: "Grievance Officer and contact",
+    title: "Complaints and contact",
     body: (
       <>
         <p>
-          In line with the Information Technology Act, 2000, the rules made under it and the DPDP Act, our Grievance
-          Officer is:
-        </p>
-        <p className="note">
-          <strong>{site.grievanceOfficer.name}</strong>
-          <br />
-          {site.legalName}, {site.address}
-          <br />
-          Email: <Mail to={site.grievanceOfficer.email} />
+          In line with the Information Technology Act, 2000, the rules made under it and the DPDP Act, send any
+          complaint about your personal data or our service to <Mail to={site.email} />, with “Grievance” in the
+          subject.
         </p>
         <p>
           We acknowledge grievances within 24 hours and aim to resolve them within 15 days. For anything else, contact{" "}

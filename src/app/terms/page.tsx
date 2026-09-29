@@ -14,8 +14,8 @@ const sections: LegalSection[] = [
     title: "Agreement",
     body: (
       <p>
-        These Terms & Conditions (“Terms”) are an agreement between you and <strong>{site.legalName}</strong>{" "}
-        (“OPflow”, “we”, “us”). By creating an account, booking an appointment or listing a practice on OPflow, you
+        These Terms & Conditions (“Terms”) are an agreement between you and <strong>OPflow</strong> (“OPflow”, “we”,
+        “us”). By creating an account, booking an appointment or listing a practice on OPflow, you
         agree to these Terms, our <a href="/privacy">Privacy Policy</a>, our{" "}
         <a href="/refunds">Rescheduling & Refund Policy</a> and our <a href="/disclaimer">Medical Disclaimer</a>. If you
         don&apos;t agree, please don&apos;t use OPflow.
@@ -239,9 +239,8 @@ const sections: LegalSection[] = [
     title: "Governing law and disputes",
     body: (
       <p>
-        These Terms are governed by the laws of India. Subject to your rights as a consumer, the courts at{" "}
-        {site.jurisdiction} have jurisdiction. Please contact our Grievance Officer first. Most issues are resolved
-        quickly that way.
+        These Terms are governed by the laws of India. Subject to your rights as a consumer, the courts in Andhra
+        Pradesh have jurisdiction. Please write to us first. Most issues are resolved quickly that way.
       </p>
     ),
   },
@@ -260,9 +259,8 @@ const sections: LegalSection[] = [
     title: "Grievances and contact",
     body: (
       <p>
-        Grievance Officer: <strong>{site.grievanceOfficer.name}</strong>,{" "}
-        <Mail to={site.grievanceOfficer.email} />. General support: <Mail to={site.email} />, {site.phone} (
-        {site.supportHours}). Registered office: {site.address}.
+        Support and complaints: <Mail to={site.email} /> ({site.supportHours}). For a complaint, please write
+        “Grievance” in the subject.
       </p>
     ),
   },

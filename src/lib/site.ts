@@ -1,8 +1,8 @@
 /**
  * Business and legal details used across the site, the legal pages and structured data.
  *
- * TODO(before launch): replace every value in [square brackets]. Cashfree's website review and the
- * IT Rules / DPDP Act need a real legal entity, address, support contact and grievance officer.
+ * The company details (registered name, CIN, office address, phone, Grievance Officer) are added here once the
+ * company is registered; until then the site shows only OPflow and the email address.
  */
 export const site = {
   name: "OPflow",
@@ -10,19 +10,10 @@ export const site = {
   description:
     "OPflow spreads OPD patients across the doctor's hours. Find a doctor by specialty, symptom or hospital, book an hour-long consultation window, pay online and follow the live token queue.",
 
-  legalName: "[Registered company name] Private Limited",
-  cin: "[Company CIN]",
-  address: "[Registered office address], [City], Andhra Pradesh [PIN], India",
   email: "info@opflow.in",
-  phone: "[+91 00000 00000]",
   // The OPflow app in the browser (works on iPhone and Android) until the store listings are live.
   webAppUrl: "https://opflow-alpha.vercel.app",
   supportHours: "Monday to Saturday, 9 AM – 7 PM IST",
-  grievanceOfficer: {
-    name: "[Grievance Officer name]",
-    email: "[grievance@your-domain.in]",
-  },
-  jurisdiction: "[City], Andhra Pradesh",
 
   // Business rules shown in the policies. The app and backend must use the same numbers.
   platformFeePercent: 10, // OPflow's share of each consultation fee; the rest is settled to the doctor/hospital

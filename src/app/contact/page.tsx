@@ -7,11 +7,9 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "Reach OPflow support, onboard your clinic or hospital, or contact our Grievance Officer.",
+  description: "Reach OPflow support, onboard your clinic or hospital, or send us a complaint.",
   alternates: { canonical: "/contact" },
 };
-
-const tel = (n: string) => `tel:${n.replace(/\s/g, "")}`;
 
 export default function ContactPage() {
   const blocks = [
@@ -20,7 +18,6 @@ export default function ContactPage() {
       text: "Questions about a booking, payment or refund. Please keep your booking number handy.",
       lines: [
         { label: "Email", value: site.email, href: `mailto:${site.email}` },
-        { label: "Phone", value: site.phone, href: tel(site.phone) },
         { label: "Hours", value: site.supportHours },
       ],
     },
@@ -33,24 +30,14 @@ export default function ContactPage() {
           value: site.email,
           href: `mailto:${site.email}?subject=${encodeURIComponent("Clinic onboarding")}`,
         },
-        { label: "Phone", value: site.phone, href: tel(site.phone) },
       ],
     },
     {
-      title: "Grievance Officer",
-      text: "For complaints about data protection or the service that support could not resolve.",
+      title: "Complaints",
+      text: "For complaints about your data or the service that support could not resolve. Please write “Grievance” in the subject.",
       lines: [
-        { label: "Name", value: site.grievanceOfficer.name },
-        { label: "Email", value: site.grievanceOfficer.email, href: `mailto:${site.grievanceOfficer.email}` },
+        { label: "Email", value: site.email, href: `mailto:${site.email}?subject=${encodeURIComponent("Grievance")}` },
         { label: "Response", value: "Acknowledged within 24 hours, resolved within 15 days" },
-      ],
-    },
-    {
-      title: "Registered office",
-      text: site.legalName,
-      lines: [
-        { label: "Address", value: site.address },
-        { label: "CIN", value: site.cin },
       ],
     },
   ];
