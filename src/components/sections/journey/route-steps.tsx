@@ -1,8 +1,6 @@
-"use client";
+import type { RefObject } from "react";
 
-import { useEffect, useRef, useState } from "react";
-
-const steps = [
+export const steps = [
   { title: "Find a doctor", text: "By specialty, by symptom or by hospital." },
   { title: "Open their profile", text: "Qualifications, fee, hospital, OPD days and which windows still have room." },
   { title: "Pick a date and a window", text: "Full windows are greyed out. Take the next one with space." },
@@ -12,33 +10,8 @@ const steps = [
   { title: "Follow the queue", text: "Delays and your turn, live, until you walk into the room." },
 ];
 
-export function RouteSteps() {
-  const listRef = useRef<HTMLOListElement>(null);
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const el = listRef.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const anchor = window.innerHeight * 0.55;
-      setProgress(Math.min(1, Math.max(0, (anchor - r.top) / r.height)));
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
+/** The seven stops, with a line that fills as the page scrolls. `progress` runs 0 → 1. */
+export function RouteSteps({ progress, listRef }: { progress: number; listRef: RefObject<HTMLOListElement | null> }) {
   return (
     <ol ref={listRef} className="relative">
       {/* track + fill */}

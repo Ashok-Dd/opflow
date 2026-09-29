@@ -44,14 +44,14 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
-        <GetApp />
         <FindCare />
         <Windows />
         <LiveQueue />
-        <RightDoctor />
         <Journey />
+        <RightDoctor />
         <UrgentCare />
         <Promises />
+        <GetApp />
         <Faq />
       </main>
       <Footer />

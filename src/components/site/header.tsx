@@ -78,10 +78,12 @@ export function Header() {
       <nav
         id="mobile-nav"
         aria-label="Mobile"
-        className={`overflow-hidden border-rule bg-paper transition-[max-height] duration-300 md:hidden ${
-          open ? "max-h-96 border-b" : "max-h-0"
+        className={`grid border-rule bg-paper transition-[grid-template-rows] duration-300 md:hidden ${
+          open ? "grid-rows-[1fr] border-b" : "grid-rows-[0fr]"
         }`}
       >
+        {/* Grows to its content height; scrolls if the screen is shorter than the menu. */}
+        <div className="max-h-[calc(100dvh-4rem)] min-h-0 overflow-y-auto overscroll-contain">
         <Container className="pb-5">
           {links.map((l) => (
             <SectionLink
@@ -102,6 +104,7 @@ export function Header() {
             Get the app
           </SectionLink>
         </Container>
+        </div>
       </nav>
     </header>
   );

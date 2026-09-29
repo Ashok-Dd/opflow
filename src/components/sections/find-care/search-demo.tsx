@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { PauseButton } from "@/components/site/pause-button";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
-import { SearchResults } from "./search-results";
+import { RouteBoard } from "./route-board";
 import { search } from "./search-data";
 
 // What the box types by itself until the visitor takes over.
@@ -39,7 +39,7 @@ export function SearchDemo() {
           setQuery(text.slice(0, i));
           await sleep(95);
         }
-        await sleep(2600);
+        await sleep(3800);
         for (let i = text.length - 1; i >= 0 && !cancelled; i--) {
           setQuery(text.slice(0, i));
           await sleep(35);
@@ -58,9 +58,9 @@ export function SearchDemo() {
   };
 
   return (
-    <div ref={ref} className="mx-auto mt-12 max-w-3xl">
-      <label className="flex items-center gap-4 border-b-2 border-ink pb-4 focus-within:border-fern">
-        <svg viewBox="0 0 20 20" className="size-6 shrink-0 text-ink-soft" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+    <div ref={ref} className="mt-12">
+      <label className="flex items-center gap-4 border-[1.5px] border-ink bg-white px-5 py-4 shadow-[0_18px_36px_-26px_rgba(23,34,29,0.5)] transition-colors focus-within:border-fern sm:px-7 sm:py-5">
+        <svg viewBox="0 0 20 20" className="size-6 shrink-0 text-ink-soft sm:size-7" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
           <circle cx="8.5" cy="8.5" r="5.5" />
           <path d="m13 13 4 4" strokeLinecap="round" />
         </svg>
@@ -73,24 +73,32 @@ export function SearchDemo() {
             if (!stopped) takeOver("");
           }}
           placeholder="Fever, ENT, City Care…"
-          className="min-w-0 flex-1 bg-transparent font-serif text-[1.9rem] leading-none outline-none placeholder:text-ink-soft/60 sm:text-[2.6rem]"
+          className="min-w-0 flex-1 bg-transparent font-serif text-[1.7rem] leading-none outline-none placeholder:text-ink-soft/50 sm:text-[2.4rem]"
         />
         {autoplay && (
-          <span className="hidden shrink-0 font-mono text-xs tracking-[0.12em] text-fern uppercase sm:block">{hint}</span>
+          <span className="h-8 w-[2px] shrink-0 animate-pulse bg-fern sm:hidden" aria-hidden="true" />
+        )}
+        {autoplay && (
+          <span className="hidden shrink-0 border border-fern/40 px-2.5 py-1 font-mono text-[11px] tracking-[0.12em] text-fern uppercase sm:block">
+            {hint}
+          </span>
         )}
       </label>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-        <span className="text-ink-soft">Try:</span>
+      <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
+        <span className="mr-1 text-ink-soft">Try</span>
         {tryThese.map((t) => (
           <button
             key={t}
             type="button"
             onClick={() => {
-              takeOver(t);
+              // Focus first: focusing clears the demo text, then the chip's text goes in.
               inputRef.current?.focus();
+              takeOver(t);
             }}
-            className="text-ink underline decoration-rule underline-offset-4 hover:decoration-fern"
+            className={`border px-3 py-1.5 transition-colors ${
+              query === t ? "border-ink bg-ink text-paper" : "border-rule bg-white hover:border-ink"
+            }`}
           >
             {t}
           </button>
@@ -100,8 +108,8 @@ export function SearchDemo() {
         )}
       </div>
 
-      <div className="mt-10 min-h-[440px]" aria-live={stopped ? "polite" : "off"}>
-        <SearchResults result={search(query)} />
+      <div className="mt-14 flex min-h-[480px] flex-col justify-center" aria-live={stopped ? "polite" : "off"}>
+        <RouteBoard result={search(query)} query={query} />
       </div>
     </div>
   );
