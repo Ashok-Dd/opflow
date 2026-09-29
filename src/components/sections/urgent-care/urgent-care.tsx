@@ -10,7 +10,7 @@ export function UrgentCare() {
       <Container className="pt-16 sm:pt-20">
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-6">
-            <Heading>When it can&apos;t wait for an OPD, the app shows what&apos;s open right now.</Heading>
+            <Heading>Can&apos;t wait for an appointment? See which doctors and hospitals can help you right now.</Heading>
           </div>
           <p className="text-[17px] leading-relaxed text-ink-soft lg:col-span-5 lg:col-start-8 lg:pt-3">
             Pick what&apos;s happening and OPflow shows first-aid steps based on WHO guidance, which work without
