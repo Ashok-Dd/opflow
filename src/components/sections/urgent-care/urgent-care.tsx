@@ -32,7 +32,7 @@ export function UrgentCare() {
                 </span>
               </span>
               <span className="mt-3 block text-[0.62em] leading-snug">
-                Find doctors and hospitals available for emergency services right now.
+                Find doctors and hospitals available for emergencies right now.
               </span>
             </Heading>
           </div>
