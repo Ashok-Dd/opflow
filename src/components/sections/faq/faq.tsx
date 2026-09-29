@@ -35,7 +35,7 @@ export const faqs = [
   },
   {
     q: "I use an iPhone. Can I use OPflow?",
-    a: "Yes. Open OPflow in Safari from the 'Open OPflow' button on this page. It works like the app, including payments and the live line. OPflow works in English and Telugu.",
+    a: "Yes. Until the App Store app is out, open opflow-alpha.vercel.app in Safari. It works like the app, including payments and the live line. OPflow works in English and Telugu.",
   },
   {
     q: "Where is OPflow available?",

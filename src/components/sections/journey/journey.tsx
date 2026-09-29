@@ -4,7 +4,7 @@ import { RouteSteps } from "./route-steps";
 
 export function Journey() {
   return (
-    <section id="booking" className="py-20 sm:py-28">
+    <section id="booking" className="border-t border-rule py-20 sm:py-28">
       <Container>
         <div className="max-w-2xl">
           <Heading>Seven stops between “I should see a doctor” and seeing one.</Heading>

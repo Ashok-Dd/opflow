@@ -12,6 +12,7 @@ const groups = [
       ["Find a doctor", "/#find"],
       ["Booking", "/#booking"],
       ["Live queue", "/#queue"],
+      ["Find your right doctor", "/#right-doctor"],
       ["Urgent care", "/#urgent"],
     ],
   },
