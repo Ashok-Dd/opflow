@@ -1,4 +1,5 @@
 import { Container, Heading } from "@/components/site/primitives";
+import { company, site } from "@/lib/site";
 
 export const faqs = [
   {
@@ -31,7 +32,7 @@ export const faqs = [
   },
   {
     q: "I'm a doctor. What does it take to get started?",
-    a: "Write to info@opflow.in or call us. The OPflow team verifies your qualifications and medical registration and sets up your account, then gives you an OPD ID and password. You set your OPD days, hours and patients per hour in the app or on the doctor website, and patients can start booking.",
+    a: `Write to ${site.email} or call us on ${company.phone}. The OPflow team verifies your qualifications and medical registration and sets up your account, then gives you an OPD ID and password. You set your OPD days, hours and patients per hour in the app or on the doctor website, and patients can start booking.`,
   },
   {
     q: "How does OPflow suggest the right doctor?",

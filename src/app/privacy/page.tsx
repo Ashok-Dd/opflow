@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage, Mail, type LegalSection } from "@/components/legal/legal-page";
-import { site } from "@/lib/site";
+import { company, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -226,7 +226,7 @@ const sections: LegalSection[] = [
           <li>Ask us to correct, complete, update or erase your personal data.</li>
           <li>Withdraw consent you have given.</li>
           <li>Nominate another person to exercise your rights in case of death or incapacity.</li>
-          <li>Have your complaints addressed by us (write to info@opflow.in), and then by the Data Protection Board of India.</li>
+          <li>Have your complaints addressed by us (write to {site.email}), and then by the Data Protection Board of India.</li>
         </ul>
         <p>
           To exercise these rights, use the app settings or write to <Mail to={site.email} />. We may need to verify
@@ -277,6 +277,11 @@ const sections: LegalSection[] = [
           complaint about your personal data or our service to <Mail to={site.email} />, with “Grievance” in the
           subject.
         </p>
+        {company.grievanceOfficer && (
+          <p>
+            Grievance Officer: <strong>{company.grievanceOfficer}</strong>, <Mail to={site.email} />.
+          </p>
+        )}
         <p>
           We acknowledge grievances within 24 hours and aim to resolve them within 15 days. For anything else, contact{" "}
           <Mail to={site.email} /> or see our <a href="/contact">Contact page</a>.

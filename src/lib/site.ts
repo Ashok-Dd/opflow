@@ -1,15 +1,31 @@
 /**
  * Business and legal details used across the site, the legal pages and structured data.
  *
- * The company details (registered name, CIN, office address, phone, Grievance Officer) are added here once the
- * company is registered; until then the site shows only OPflow and the email address.
+ * Company details (registered name, CIN, office address, phone, Grievance Officer): leave a value empty until it
+ * exists. Each one appears on the site (footer, contact page and policies) only when it is filled in, so nothing
+ * shows a blank or a made-up detail. Until then the site shows only OPflow and the email address.
  */
+export const company: Record<
+  "legalName" | "address" | "phone" | "grievanceOfficer" | "cin",
+  string
+> = {
+  legalName: "OPFLOW",
+  address: "Guntur",
+  phone: "+91 63009 27327",
+  grievanceOfficer: "Sreeram Addanki", // name of the Grievance Officer; their contact is the support email above
+  cin: "",
+};
+
 export const site = {
   name: "OPflow",
   // Falls back to the real domain so a missing variable never puts localhost into canonical links or the sitemap.
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://opflow.in").replace(/\/+$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://opflow.in").replace(
+    /\/+$/,
+    "",
+  ),
   // Shown in Google results and share cards, so it names what the product is, not just the brand.
-  title: "OPflow: OPD appointment booking app, book doctors and track the live token queue",
+  title:
+    "OPflow: OPD appointment booking app, book doctors and track the live token queue",
   description:
     "Book an OPD appointment online with OPflow. Find a doctor by specialty, symptom or hospital, pick an hour-long window, pay online and follow the live token queue from home. Works in English and Telugu.",
   keywords: [
@@ -41,7 +57,10 @@ export const site = {
 
 /** Plain-language guide pages that target what people search for. Listed in the footer and the sitemap. */
 export const guidePages = [
-  { href: "/opd-appointment-booking", label: "How to book an OPD appointment online" },
+  {
+    href: "/opd-appointment-booking",
+    label: "How to book an OPD appointment online",
+  },
   { href: "/live-opd-token-queue", label: "Live OPD token queue" },
   { href: "/for-doctors", label: "OPD software for doctors and clinics" },
 ] as const;

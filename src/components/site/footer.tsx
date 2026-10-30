@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { guidePages, legalPages, site } from "@/lib/site";
+import { company, guidePages, legalPages, site } from "@/lib/site";
 import { Logo } from "./logo";
 import { Container } from "./primitives";
 import { SectionLink } from "./section-link";
@@ -45,6 +45,10 @@ export function Footer() {
             </p>
             <address className="mt-5 space-y-1 text-sm not-italic text-mint/80">
               <a href={`mailto:${site.email}`} className="block hover:text-white">{site.email}</a>
+              {company.phone && (
+                <a href={`tel:${company.phone.replace(/[^\d+]/g, "")}`} className="block hover:text-white">{company.phone}</a>
+              )}
+              {company.address && <span className="block">{company.address}</span>}
             </address>
             <StoreButtons tone="light" className="mt-6" />
           </div>
@@ -84,7 +88,8 @@ export function Footer() {
             <a href="tel:108" className="text-paper underline underline-offset-2">108</a>.
           </p>
           <p className="shrink-0">
-            © {new Date().getFullYear()} {site.name}
+            © {new Date().getFullYear()} {company.legalName || site.name}
+            {company.cin && <span className="block">CIN {company.cin}</span>}
           </p>
         </div>
       </Container>

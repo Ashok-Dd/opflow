@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage, Mail, type LegalSection } from "@/components/legal/legal-page";
-import { site } from "@/lib/site";
+import { company, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions",
@@ -261,6 +261,7 @@ const sections: LegalSection[] = [
       <p>
         Support and complaints: <Mail to={site.email} /> ({site.supportHours}). For a complaint, please write
         “Grievance” in the subject.
+        {company.grievanceOfficer && <> Grievance Officer: {company.grievanceOfficer}.</>}
       </p>
     ),
   },

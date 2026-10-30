@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
 import { Container } from "@/components/site/primitives";
-import { site } from "@/lib/site";
+import { company, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -18,7 +18,11 @@ export default function ContactPage() {
       text: "Questions about a booking, payment or refund. Please keep your booking number handy.",
       lines: [
         { label: "Email", value: site.email, href: `mailto:${site.email}` },
+        ...(company.phone
+          ? [{ label: "Phone", value: company.phone, href: `tel:${company.phone.replace(/[^\d+]/g, "")}` }]
+          : []),
         { label: "Hours", value: site.supportHours },
+        ...(company.address ? [{ label: "Office", value: `${company.legalName || site.name}, ${company.address}` }] : []),
       ],
     },
     {
@@ -37,6 +41,7 @@ export default function ContactPage() {
       text: "For complaints about your data or the service that support could not resolve. Please write “Grievance” in the subject.",
       lines: [
         { label: "Email", value: site.email, href: `mailto:${site.email}?subject=${encodeURIComponent("Grievance")}` },
+        ...(company.grievanceOfficer ? [{ label: "Officer", value: company.grievanceOfficer }] : []),
         { label: "Response", value: "Acknowledged within 24 hours, resolved within 15 days" },
       ],
     },
