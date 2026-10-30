@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, Newsreader } from "next/font/google";
+import { ScrollProgress } from "@/components/site/scroll-progress";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -58,7 +59,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${plex.variable} ${plexMono.variable} ${newsreader.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        <ScrollProgress />
+        {children}
+      </body>
     </html>
   );
 }

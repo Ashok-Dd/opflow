@@ -40,6 +40,13 @@
   --animate-pulse-ring: pulse-ring 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
 }
 
+/* Lets the waiting hall's state number be eased by a plain CSS transition. */
+@property --p {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
 @keyframes stamp-in {
   0% { transform: scale(1.8) rotate(var(--stamp-tilt, -9deg)); opacity: 0; }
   60% { transform: scale(0.94) rotate(var(--stamp-tilt, -9deg)); opacity: 1; }
@@ -105,6 +112,42 @@ body {
     currentColor 0 1.5px,
     transparent 1.5px 6px
   );
+}
+
+/*
+ * Content glides up as it enters the screen, tied to the scroll position itself, so it feels the same
+ * at any scroll speed. Browsers without scroll-driven animations simply show the content.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .scroll-rise {
+      animation: scroll-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 40%;
+    }
+  }
+}
+
+/* FAQ answers open and close smoothly where the browser can animate <details>; elsewhere they just toggle. */
+@supports selector(details::details-content) {
+  .faq-item {
+    interpolate-size: allow-keywords;
+  }
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size 350ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      content-visibility 350ms allow-discrete;
+  }
+  .faq-item[open]::details-content {
+    block-size: auto;
+  }
+}
+
+@keyframes scroll-rise {
+  from { opacity: 0; translate: 0 28px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

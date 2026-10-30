@@ -1,158 +1,171 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties, type PointerEvent } from "react";
 import { PauseButton } from "@/components/site/pause-button";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
+import { AXIS, slips, timeToX, WINDOWS } from "./hall-layout";
+import styles from "./waiting-hall.module.css";
 
-const PEOPLE = 32;
-const START = 8.5; // 8:30 AM
-const END = 13; // 1 PM
-const x = (t: number) => Math.round(((t - START) / (END - START)) * 10000) / 100;
-
-// Small deterministic jitter so the crowd doesn't look like a spreadsheet.
-const jitter = (i: number, span: number) => ((Math.sin(i * 12.9898) * 43758.5453) % 1) * span;
-
-const crowd = Array.from({ length: PEOPLE }, (_, i) => {
-  const col = Math.floor(i / 8);
-  const row = i % 8;
-  return { left: x(8.78 + col * 0.13 + jitter(i, 0.05)), bottom: row * 13 };
-});
-
-const spread = Array.from({ length: PEOPLE }, (_, i) => {
-  const w = Math.floor(i / 8);
-  const k = i % 8;
-  return { left: x(9.12 + w + (k % 4) * 0.19 + jitter(i, 0.03)), bottom: Math.floor(k / 4) * 13 };
-});
-
-const axis = [
-  { t: 9, label: "9 AM" },
-  { t: 10, label: "10 AM" },
-  { t: 11, label: "11 AM" },
-  { t: 12, label: "12 PM" },
-  { t: 13, label: "1 PM" },
-];
-
-const modes = [
-  { key: "today", title: "Without OPflow", line: "Everyone arrives at 9", hall: "31", hallNote: "people in the hall at 9:30" },
-  { key: "opflow", title: "With OPflow", line: "8 people an hour, by booking", hall: "7", hallNote: "people in the hall at 9:30" },
+const MODES = [
+  {
+    title: "Without OPflow",
+    line: "Everyone arrives at 9",
+    caption: "Everyone turns up at 9. The doctor sees them one by one, and most of the morning is spent waiting.",
+  },
+  {
+    title: "With OPflow",
+    line: "8 an hour, by booking",
+    caption: "Eight places an hour, booked in advance. The same OPD, and a hall you can walk into.",
+  },
 ] as const;
 
+/** People in the hall at 9:30 in each situation. */
+const HALL = [31, 7] as const;
+
+const FIRST_SWITCH = 2800; // ms the crowded hall is shown before it first resolves
+const SWITCH_EVERY = 4600;
+
+/**
+ * Fig. 1 of the hero: a framed, printed-form panel that shows one OPD morning two ways. It plays by itself
+ * while on screen (with a pause button), and the tabs let the visitor choose.
+ */
 export function WaitingHall() {
-  const [ref, inView] = useInView<HTMLDivElement>(0.3);
-  const [mode, setMode] = useState(0);
-  const [paused, setPaused] = useState(false);
   const reduced = useReducedMotion();
-  const still = paused || reduced;
+  const [ref, inView] = useInView<HTMLElement>(0.25);
+  const [mode, setMode] = useState<0 | 1>(0);
+  const [paused, setPaused] = useState(false);
+  const playing = inView && !paused && !reduced;
 
   useEffect(() => {
-    if (!inView || still) return;
+    if (!playing) return;
     let id: ReturnType<typeof setInterval> | undefined;
     const start = setTimeout(() => {
-      setMode((m) => 1 - m);
-      id = setInterval(() => setMode((m) => 1 - m), 3800);
-    }, 2500);
+      setMode((m) => (m === 0 ? 1 : 0));
+      id = setInterval(() => setMode((m) => (m === 0 ? 1 : 0)), SWITCH_EVERY);
+    }, FIRST_SWITCH);
     return () => {
       clearTimeout(start);
       clearInterval(id);
     };
-  }, [inView, still]);
+  }, [playing]);
 
-  const layout = mode === 0 ? crowd : spread;
-  const current = modes[mode];
+  const lean = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse") return;
+    const box = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", String(((e.clientX - box.left) / box.width) * 2 - 1));
+    e.currentTarget.style.setProperty("--my", String(((e.clientY - box.top) / box.height) * 2 - 1));
+  };
+  const rest = (e: PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.style.setProperty("--mx", "0");
+    e.currentTarget.style.setProperty("--my", "0");
+  };
 
   return (
-    <div ref={ref}>
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex gap-2" role="tablist" aria-label="Compare arrivals">
-          {modes.map((m, i) => (
-            <button
-              key={m.key}
-              type="button"
-              role="tab"
-              aria-selected={mode === i}
-              onClick={() => {
-                setMode(i);
-                setPaused(true);
-              }}
-              className={`rounded-[4px] border px-4 py-2.5 text-left transition-colors ${
-                mode === i ? "border-paper bg-paper text-forest" : "border-mint/30 text-mint hover:border-mint/70"
-              }`}
-            >
-              <span className="block text-sm font-semibold">{m.title}</span>
-              <span className={`block text-[13px] ${mode === i ? "text-forest/80" : "text-mint/85"}`}>{m.line}</span>
-            </button>
-          ))}
-        </div>
-        <p className="flex items-baseline gap-3" aria-live="polite">
-          <span key={current.hall} className={`animate-flip-in font-mono text-5xl ${mode === 0 ? "text-[#f3a494]" : "text-leaf"}`}>
-            {current.hall}
-          </span>
-          <span className="max-w-[9rem] text-sm leading-tight text-mint/70">{current.hallNote}</span>
+    <figure ref={ref} className="rounded-[4px] bg-paper text-ink">
+      <figcaption className="flex items-center justify-between border-b border-rule px-4 py-3 font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase sm:px-6">
+        <span>Fig. 1 · The OPD waiting hall</span>
+        <span>9:30 AM</span>
+      </figcaption>
+
+      <div className="px-4 pt-5 pb-4 sm:px-6 sm:pt-6">
+        <p className="sr-only">
+          Without OPflow, about {HALL[0]} people crowd the hall at 9:30. With OPflow, about {HALL[1]}.
         </p>
-      </div>
 
-      {/* the hall */}
-      <div className="relative mt-8 h-[150px] sm:h-[170px]" aria-hidden="true">
-        {/* window bands */}
-        {[9, 10, 11, 12].map((t, i) => (
-          <span
-            key={t}
-            className={`absolute inset-y-0 border-l border-dashed border-mint/20 transition-colors duration-700 ${
-              mode === 1 ? (i % 2 ? "bg-white/[0.02]" : "bg-white/[0.05]") : ""
-            }`}
-            style={{ left: `${x(t)}%`, width: `${x(t + 1) - x(t)}%` }}
-          />
-        ))}
+        <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+          <div className="flex rounded-[4px] border border-ink/25 p-0.5" role="tablist" aria-label="Compare arrivals">
+            {MODES.map((m, i) => (
+              <button
+                key={m.title}
+                type="button"
+                role="tab"
+                aria-selected={mode === i}
+                onClick={() => {
+                  setMode(i as 0 | 1);
+                  setPaused(true);
+                }}
+                className={`rounded-[3px] px-3 py-2 text-left transition-colors sm:px-4 ${
+                  mode === i ? "bg-ink text-paper" : "text-ink-soft hover:text-ink"
+                }`}
+              >
+                <span className="block text-sm font-semibold">{m.title}</span>
+                <span className="block text-[12px] opacity-80">{m.line}</span>
+              </button>
+            ))}
+          </div>
 
-        {layout.map((p, i) => (
-          // Full-width track, moved with transform only, so the animation never triggers layout.
-          <span
-            key={i}
-            className="absolute inset-x-0 bottom-0 h-0 transition-transform duration-[1100ms] ease-[cubic-bezier(0.5,0,0.2,1)] will-change-transform"
-            style={{
-              transform: `translate(${p.left}%, -${p.bottom}px)`,
-              transitionDelay: `${(mode === 1 ? i : PEOPLE - i) * 18}ms`,
-            }}
+          <p className="flex items-center gap-3" aria-hidden="true">
+            <span className={`${styles.reel} font-mono text-[2.6rem] leading-[3.4rem] tabular-nums`} data-mode={mode}>
+              <span className="block">
+                <span className="block text-alarm">{HALL[0]}</span>
+                <span className="block text-forest">{HALL[1]}</span>
+              </span>
+            </span>
+            <span className="max-w-[7rem] text-[13px] leading-tight text-ink-soft">people in the hall</span>
+          </p>
+        </div>
+
+        <div className="mt-6" onPointerMove={lean} onPointerLeave={rest}>
+          <div
+            className={styles.hall}
+            data-seen={inView}
+            style={{ "--p": mode } as CSSProperties}
+            aria-hidden="true"
           >
-            <Person tone={mode === 0 ? "crowd" : "calm"} />
-          </span>
-        ))}
+            {WINDOWS.map((hour) => (
+              <span
+                key={hour}
+                className={styles.band}
+                style={{ left: `${timeToX(hour)}%`, width: `${timeToX(hour + 1) - timeToX(hour)}%` }}
+              />
+            ))}
+            {slips.map((s) => (
+              <span
+                key={s.token}
+                className={styles.slip}
+                style={
+                  {
+                    "--x0": s.x0,
+                    "--r0": s.row0,
+                    "--a0": s.angle0,
+                    "--x1": s.x1,
+                    "--r1": s.row1,
+                    "--a1": s.angle1,
+                    "--d": s.delay,
+                    "--z": s.depth,
+                  } as CSSProperties
+                }
+              >
+                <span className={styles.face}>
+                  <span>{s.token}</span>
+                </span>
+              </span>
+            ))}
+          </div>
+
+          <div className="relative h-7 border-t border-ink/40" aria-hidden="true">
+            {AXIS.map((a) => (
+              <span
+                key={a.hour}
+                className={`absolute top-2 font-mono text-[11px] whitespace-nowrap text-ink-soft ${
+                  a.hour === AXIS[AXIS.length - 1].hour ? "-translate-x-full" : "-translate-x-1/2"
+                }`}
+                style={{ left: `${timeToX(a.hour)}%` }}
+              >
+                {a.label}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="relative h-7 border-t border-mint/40">
-        <PauseButton
-          paused={still}
-          onToggle={() => setPaused((p) => !p)}
-          label="arrivals animation"
-          tone="light"
-          className="absolute top-8 right-0"
-        />
-        {axis.map((a) => (
-          <span
-            key={a.t}
-            className={`absolute top-2 font-mono text-[11px] whitespace-nowrap text-mint/75 ${a.t === END ? "-translate-x-full" : "-translate-x-1/2"}`}
-            style={{ left: `${x(a.t)}%` }}
-          >
-            {a.label}
-          </span>
-        ))}
+      <div className="flex items-center justify-between gap-6 border-t border-rule px-4 py-3 sm:px-6">
+        <p key={mode} className="animate-fade-up font-serif text-[15px] leading-snug text-ink italic sm:text-base">
+          {MODES[mode].caption}
+        </p>
+        <PauseButton paused={paused || reduced} onToggle={() => setPaused((p) => !p)} label="arrivals animation" className="shrink-0" />
       </div>
-    </div>
-  );
-}
-
-function Person({ tone }: { tone: "crowd" | "calm" }) {
-  return (
-    <svg
-      viewBox="0 0 12 18"
-      className={`absolute bottom-0 left-0 h-[18px] w-3 transition-colors duration-[1100ms] sm:h-[22px] sm:w-[15px] ${
-        tone === "crowd" ? "text-[#f3a494]" : "text-leaf"
-      }`}
-      fill="currentColor"
-    >
-      <circle cx="6" cy="3.4" r="3" />
-      <path d="M0.6 18v-5.2C0.6 9.4 3 7.6 6 7.6s5.4 1.8 5.4 5.2V18z" />
-    </svg>
+    </figure>
   );
 }

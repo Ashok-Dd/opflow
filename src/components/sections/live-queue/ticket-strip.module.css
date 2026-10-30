@@ -1,0 +1,239 @@
+/*
+ * A strip of paper queue tickets coming out of a dispenser slot. Every ticket has a zig-zag tear edge on its
+ * left. When the doctor finishes a visit the front ticket tears off and falls, and the strip slides forward.
+ * Yours is marked; when it is called it lifts and is stamped, and when the visit is done it flies off upwards.
+ * Everything is CSS driven by data attributes; the component only says which state each ticket is in.
+ */
+
+.viewport {
+  --w: 78px;
+  --h: 112px;
+
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+@media (min-width: 640px) {
+  .viewport {
+    --w: 104px;
+    --h: 132px;
+  }
+}
+
+.slot {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  width: 14px;
+  height: calc(var(--h) + 18px);
+  margin-top: -9px;
+  border-radius: 3px;
+  background: #101311;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
+}
+
+/* Clips the strip where it disappears into the slot, but lets torn tickets fall freely downwards. */
+.window {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow-x: clip;
+  overflow-y: visible;
+  padding-bottom: 7rem; /* room for the bracket and for a torn ticket to fall into; the mask below covers it */
+  /* the line carries on beyond the edge of the screen */
+  mask-image: linear-gradient(to right, #000 88%, transparent);
+}
+
+.strip {
+  --shift: 0;
+
+  display: flex;
+  width: max-content;
+  translate: calc(var(--shift) * var(--w) * -1) 0;
+  transition: translate 650ms cubic-bezier(0.2, 0.7, 0.2, 1) 280ms;
+}
+
+.ticket {
+  position: relative;
+  flex: none;
+  width: var(--w);
+  height: var(--h);
+  padding: 8px 8px 8px 12px;
+  /* the tear edge: small teeth down the left side */
+  clip-path: polygon(
+    100% 0, 100% 100%, 0 100%, 5px 91.667%, 0 83.333%, 5px 75%, 0 66.667%, 5px 58.333%, 0 50%,
+    5px 41.667%, 0 33.333%, 5px 25%, 0 16.667%, 5px 8.333%, 0 0
+  );
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  transition: translate 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  animation: feed 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 70ms);
+}
+
+.ticket[data-state="serving"] {
+  translate: 0 -6px;
+}
+
+/* Tickets torn off by the doctor: a small jerk, then they drop away. */
+.ticket[data-state="gone"] {
+  animation: tear-down 850ms cubic-bezier(0.4, 0, 0.8, 0.5) both;
+  pointer-events: none;
+}
+
+/* The patient's own ticket is called, stamped, and later leaves upwards, into the room. */
+.ticket[data-mine="true"] {
+  background: #fff;
+}
+
+.ticket[data-mine="true"][data-state="serving"] {
+  translate: 0 -14px;
+}
+
+.ticket[data-mine="true"][data-state="serving"] .number {
+  color: var(--color-forest);
+}
+
+.ticket[data-mine="true"][data-state="gone"] {
+  animation-name: leave-up;
+}
+
+.band {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 6px;
+  background: rgb(23 34 29 / 0.18);
+}
+
+.ticket[data-mine="true"] .band {
+  background: var(--color-forest);
+}
+
+.label {
+  display: block;
+  margin-top: 6px;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--color-ink-soft);
+  text-transform: uppercase;
+}
+
+.number {
+  display: block;
+  margin-top: 6px;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+@media (min-width: 640px) {
+  .number {
+    font-size: 38px;
+  }
+}
+
+.bars {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  left: 12px;
+  width: calc(100% - 20px);
+  height: 18px;
+}
+
+.stamp {
+  --stamp-tilt: -9deg;
+
+  position: absolute;
+  top: calc(var(--h) - 46px);
+  left: 10px;
+  padding: 1px 4px;
+  border: 1.5px solid var(--color-forest);
+  border-radius: 2px;
+  background: #fff;
+  color: var(--color-forest);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  animation: stamp-in 460ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
+}
+
+@media (min-width: 640px) {
+  .stamp {
+    top: calc(var(--h) - 52px);
+    padding: 2px 6px;
+    border-width: 2px;
+    font-size: 10px;
+  }
+}
+
+/* A bracket under the tickets between the front one and yours: those are the people ahead. */
+.bracket {
+  --ahead: 0;
+
+  position: absolute;
+  top: calc(var(--h) + 14px);
+  left: var(--w);
+  width: calc(var(--ahead) * var(--w));
+  height: 9px;
+  border: 1.5px solid rgb(220 236 225 / 0.5);
+  border-top: 0;
+  opacity: 0;
+  transition:
+    width 650ms cubic-bezier(0.2, 0.7, 0.2, 1) 280ms,
+    opacity 400ms 280ms;
+}
+
+.bracket[data-visible="true"] {
+  opacity: 1;
+}
+
+.bracket > span {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  translate: -50% 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  color: var(--color-mint);
+  text-transform: uppercase;
+}
+
+@keyframes feed {
+  from {
+    opacity: 0;
+    translate: 70px 0;
+  }
+}
+
+@keyframes tear-down {
+  0% {
+    transform: none;
+    opacity: 1;
+  }
+  14% {
+    transform: translate(-3px, -6px) rotate(-4deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(24px, 110px) rotate(14deg);
+    opacity: 0;
+  }
+}
+
+@keyframes leave-up {
+  0% {
+    transform: none;
+    opacity: 1;
+  }
+  100% {
+    transform: translate(40px, -150px) rotate(14deg);
+    opacity: 0;
+  }
+}

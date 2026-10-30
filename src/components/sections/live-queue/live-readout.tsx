@@ -4,24 +4,30 @@ import { useEffect, useState, type ReactNode } from "react";
 import { PauseButton } from "@/components/site/pause-button";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
+import { TicketStrip } from "./ticket-strip";
 import { TokenBoard } from "./token-board";
 
 const MY_TOKEN = 21;
 const FIRST = 15;
+const LAST = MY_TOKEN + 11; // the line carries on behind yours, past the edge of the screen
+/** One pass of the demo: token 15 up to the one after yours, then the line starts again. */
+const STEPS = MY_TOKEN - FIRST + 2;
 const AVG_MIN = 7;
 const DELAY_MIN = 10;
 const states = ["Booked", "Waiting", "With the doctor", "Done"];
 
 export function LiveReadout({ intro }: { intro: ReactNode }) {
   const [ref, inView] = useInView<HTMLDivElement>(0.3);
-  const [serving, setServing] = useState(FIRST);
+  const [tick, setTick] = useState(0);
+  const serving = FIRST + (tick % STEPS);
+  const pass = Math.floor(tick / STEPS);
   const [paused, setPaused] = useState(false);
   const reduced = useReducedMotion();
   const still = paused || reduced;
 
   useEffect(() => {
     if (!inView || still) return;
-    const id = setInterval(() => setServing((s) => (s > MY_TOKEN ? FIRST : s + 1)), 3200);
+    const id = setInterval(() => setTick((t) => t + 1), 3200);
     return () => clearInterval(id);
   }, [inView, still]);
 
@@ -33,7 +39,7 @@ export function LiveReadout({ intro }: { intro: ReactNode }) {
   const hi = Math.ceil((estimate + 8) / 5) * 5;
 
   return (
-    <div ref={ref} className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+    <div ref={ref} className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-16">
       <div className="lg:col-span-6">
         {intro}
         <div className="mt-10">
@@ -81,6 +87,19 @@ export function LiveReadout({ intro }: { intro: ReactNode }) {
       </div>
 
       <div className="border-t border-mint/20 pt-8 lg:col-span-12 lg:mt-6">
+        <p className="font-mono text-[11px] tracking-[0.14em] text-mint/75 uppercase">
+          Your place in line · Token {MY_TOKEN}
+        </p>
+        <p className="mt-3 max-w-2xl text-sm text-mint/60">
+          Each time the doctor finishes a visit, one ticket is torn off. The tickets between the front and yours are the
+          people ahead of you.
+        </p>
+        <div className="mt-8">
+          <TicketStrip key={pass} first={FIRST} last={LAST} serving={serving} mine={MY_TOKEN} />
+        </div>
+      </div>
+
+      <div className="border-t border-mint/20 pt-8 lg:col-span-12">
         <p className="font-mono text-[11px] tracking-[0.14em] text-mint/75 uppercase">
           What the doctor marks, what you see · Token {MY_TOKEN}
         </p>

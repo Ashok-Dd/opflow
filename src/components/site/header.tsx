@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useActiveSection } from "@/lib/use-active-section";
 import { Logo } from "./logo";
 import { Container } from "./primitives";
 import { SectionLink } from "./section-link";
@@ -15,7 +16,10 @@ const links = [
   { id: "faq", label: "FAQ" },
 ];
 
+const sectionIds = links.map((l) => l.id);
+
 export function Header() {
+  const active = useActiveSection(sectionIds);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -42,7 +46,9 @@ export function Header() {
             <SectionLink
               key={l.id}
               id={l.id}
-              className="text-[15px] text-ink-soft underline-offset-[6px] hover:text-ink hover:underline"
+              className={`text-[15px] underline-offset-[6px] transition-colors hover:text-ink hover:underline ${
+                active === l.id ? "text-ink underline decoration-fern decoration-2" : "text-ink-soft"
+              }`}
             >
               {l.label}
             </SectionLink>

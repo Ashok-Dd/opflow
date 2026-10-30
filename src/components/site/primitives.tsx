@@ -7,7 +7,7 @@ export function Container({ children, className = "" }: { children: ReactNode; c
 export function Heading({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <h2
-      className={`font-serif text-[2rem] leading-[1.1] font-medium tracking-[-0.01em] sm:text-[2.6rem] ${className}`}
+      className={`scroll-rise font-serif text-[2rem] leading-[1.1] font-medium tracking-[-0.01em] sm:text-[2.6rem] ${className}`}
     >
       {children}
     </h2>

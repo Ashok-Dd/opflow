@@ -1,0 +1,108 @@
+/*
+ * The waiting hall: 32 token slips that move between "everyone arrives at 9" and "booked across the hours".
+ *
+ * One registered variable, --p (0 or 1), is the whole state. Changing it makes the browser ease it over
+ * 1.9 s (see the transition below), and every slip works out its own eased position from the running value,
+ * so the animating is done in CSS with `translate` and `rotate` only. JavaScript just flips 0 and 1.
+ */
+
+.hall {
+  --sw: 20px;
+  --sh: 13px;
+  --row: 16px;
+
+  /* Eased over time, not set per frame: this is what makes the move feel smooth. */
+  transition: --p 1.9s cubic-bezier(0.6, 0, 0.3, 1);
+
+  /* Hall progress: the ends hold still for a moment so each state reads clearly. */
+  --q: clamp(0, calc((var(--p, 0) - 0.08) / 0.84), 1);
+
+  position: relative;
+  container-type: inline-size; /* lets slips use cqw: a percentage of the hall width */
+  height: calc(var(--row) * 8.6);
+}
+
+@media (min-width: 640px) {
+  .hall {
+    --sw: 36px;
+    --sh: 24px;
+    --row: 29px;
+  }
+}
+
+.band {
+  position: absolute;
+  inset-block: 0;
+  border-left: 1px dashed rgb(23 34 29 / 0.18);
+  opacity: var(--q);
+}
+
+.band:nth-child(odd) {
+  background: rgb(23 34 29 / 0.045);
+}
+
+.slip {
+  --t: clamp(0, calc((var(--q) - var(--d)) / 0.5), 1);
+  --e: calc(var(--t) * var(--t) * (3 - 2 * var(--t))); /* smoothstep */
+
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: var(--sw);
+  height: var(--sh);
+  translate:
+    calc((var(--x0) + (var(--x1) - var(--x0)) * var(--e)) * 1cqw)
+    calc((var(--r0) + (var(--r1) - var(--r0)) * var(--e)) * var(--row) * -1);
+  rotate: calc((var(--a0) + (var(--a1) - var(--a0)) * var(--e)) * 1deg);
+  will-change: translate, rotate;
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(23 34 29 / 0.22);
+  border-top: 3px solid color-mix(in oklab, var(--color-forest) calc(var(--e) * 100%), var(--color-alarm));
+  border-radius: 2px;
+  background: #fff;
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+
+  /* Leans towards the mouse, each slip by its own amount, so the hall has depth. */
+  translate: calc(var(--mx, 0) * var(--z) * 6px) calc(var(--my, 0) * var(--z) * 3px);
+  transition:
+    translate 400ms ease-out,
+    scale 520ms cubic-bezier(0.3, 1.4, 0.5, 1);
+  transition-delay: 0ms, calc(var(--d) * 700ms);
+}
+
+/* Slips are laid down one by one the first time the hall scrolls into view. */
+.hall[data-seen="false"] .face {
+  scale: 0;
+}
+
+@media (max-width: 639px) {
+  .face > span {
+    display: none; /* too small to read; the slip shape alone carries the idea */
+  }
+}
+
+/* The people-in-the-hall counter is a two-line reel, like a flip board, rolled by one transform. */
+.reel {
+  display: block;
+  height: 3.4rem;
+  overflow: hidden;
+}
+
+.reel > span {
+  transition: translate 1.1s cubic-bezier(0.6, 0, 0.3, 1);
+}
+
+.reel[data-mode="1"] > span {
+  translate: 0 -50%;
+}

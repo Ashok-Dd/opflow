@@ -9,7 +9,7 @@ export function StoreButtons({ tone = "ink", className = "" }: { tone?: "ink" | 
     tone === "ink"
       ? "bg-ink text-paper hover:bg-forest"
       : "bg-paper text-ink hover:bg-white";
-  const base = `group inline-flex h-[52px] items-center gap-3 rounded-[6px] pl-3.5 pr-5 transition-colors ${style}`;
+  const base = `group inline-flex h-[52px] items-center gap-3 rounded-[6px] pl-3.5 pr-5 transition-[background-color,translate] duration-200 hover:-translate-y-0.5 active:translate-y-0 ${style}`;
   return (
     <div className={`flex flex-wrap gap-2.5 ${className}`}>
       <a href={PLAY_STORE_URL} {...external(PLAY_STORE_URL)} className={base} aria-label="Get it on Google Play">

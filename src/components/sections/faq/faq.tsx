@@ -52,6 +52,8 @@ export const faqs = [
   },
 ];
 
+const phoneHref = `tel:${company.phone.replace(/[^\d+]/g, "")}`;
+
 export function Faq() {
   return (
     <section id="faq" className="border-t border-rule py-20 sm:py-28">
@@ -59,14 +61,49 @@ export function Faq() {
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
             <Heading>Things people ask us.</Heading>
+
+            {/* A slip with a person's contact on it, for whatever the questions here don't cover. */}
+            <aside className="mt-10 rounded-[4px] border border-rule bg-white">
+              <p className="border-b border-dashed border-rule px-5 py-3 font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">
+                Still stuck?
+              </p>
+              <div className="px-5 py-4">
+                <p className="font-serif text-2xl leading-tight">Ask a person.</p>
+                <dl className="mt-4 space-y-2 text-[15px]">
+                  {[
+                    ["Email", site.email, `mailto:${site.email}`],
+                    ["Phone", company.phone, phoneHref],
+                    ["Hours", site.supportHours, null],
+                  ].map(([label, value, href]) => (
+                    <div key={label} className="grid grid-cols-[56px_1fr] gap-3">
+                      <dt className="font-mono text-[11px] leading-6 tracking-[0.14em] text-ink-soft uppercase">{label}</dt>
+                      <dd>
+                        {href ? (
+                          <a href={href} className="underline decoration-fern underline-offset-4">
+                            {value}
+                          </a>
+                        ) : (
+                          value
+                        )}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </aside>
           </div>
         </div>
 
         <div className="border-t-[1.5px] border-ink lg:col-span-8">
-          {faqs.map((f) => (
-            <details key={f.q} className="group border-b border-rule">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
-                <span className="font-serif text-[1.35rem] leading-snug">{f.q}</span>
+          {faqs.map((f, i) => (
+            <details key={f.q} className="faq-item scroll-rise group border-b border-rule">
+              <summary className="grid cursor-pointer list-none grid-cols-[2.25rem_1fr_auto] items-start gap-x-3 py-5 [&::-webkit-details-marker]:hidden">
+                <span className="pt-1.5 font-mono text-xs text-ink-soft transition-colors group-open:text-fern">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="font-serif text-[1.35rem] leading-snug transition-colors group-hover:text-fern group-open:text-forest">
+                  {f.q}
+                </span>
                 <span
                   className="mt-1.5 grid size-5 shrink-0 place-items-center font-mono text-lg leading-none text-fern transition-transform duration-300 group-open:rotate-45"
                   aria-hidden="true"
@@ -74,7 +111,7 @@ export function Faq() {
                   +
                 </span>
               </summary>
-              <p className="-mt-1 max-w-2xl pb-6 leading-relaxed text-ink-soft">{f.a}</p>
+              <p className="max-w-2xl pb-6 pl-[3.25rem] leading-relaxed text-ink-soft">{f.a}</p>
             </details>
           ))}
         </div>
