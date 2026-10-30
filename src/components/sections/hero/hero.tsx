@@ -12,8 +12,8 @@ export function Hero() {
           </h1>
           <div className="lg:col-span-4 lg:col-start-9 lg:pb-2">
             <p className="text-[17px] leading-relaxed text-mint/80">
-              Book an hour-long OPD window, follow the token queue from home, and walk in when it&apos;s nearly your
-              turn. Not at 9 AM with everyone else.
+              The OPD appointment booking app: book an hour-long OP window with a doctor, follow the live token queue
+              from home, and walk in when it&apos;s nearly your turn. Not at 9 AM with everyone else.
             </p>
             <StoreButtons tone="light" className="mt-6" />
           </div>

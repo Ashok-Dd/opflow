@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { legalPages, site } from "@/lib/site";
+import { guidePages, legalPages, site } from "@/lib/site";
 import { Logo } from "./logo";
 import { Container } from "./primitives";
 import { SectionLink } from "./section-link";
@@ -25,6 +25,7 @@ const groups = [
       ["Questions", "/#faq"],
     ],
   },
+  { title: "Guides", links: guidePages.map((p) => [p.label, p.href]) },
   { title: "Legal", links: legalPages.map((p) => [p.label, p.href]) },
 ];
 
@@ -48,7 +49,7 @@ export function Footer() {
             <StoreButtons tone="light" className="mt-6" />
           </div>
 
-          <nav className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7 lg:col-start-6" aria-label="Footer">
+          <nav className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-7 lg:col-start-6" aria-label="Footer">
             {groups.map((g) => (
               <div key={g.title}>
                 <p className="font-mono text-[11px] tracking-[0.14em] text-mint/75 uppercase">{g.title}</p>

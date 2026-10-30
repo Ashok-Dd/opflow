@@ -17,21 +17,42 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "OPflow: know when the doctor will see you",
+    default: site.title,
     template: "%s · OPflow",
   },
   description: site.description,
   applicationName: "OPflow",
-  keywords: ["OPD appointment", "doctor appointment", "hospital queue", "token number", "OPD booking India"],
+  keywords: [...site.keywords],
+  authors: [{ name: "OPflow", url: site.url }],
+  creator: "OPflow",
+  publisher: "OPflow",
+  category: "health",
   alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
+  // Search Console / Bing tag verification. The DNS TXT method needs no code, so these stay optional.
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+      : undefined,
+  },
   openGraph: {
-    title: "OPflow: know when the doctor will see you",
+    title: site.title,
     description: "Book an hour-long OPD window, follow the live token queue and stop waiting all morning.",
     type: "website",
+    url: "/",
     siteName: "OPflow",
     locale: "en_IN",
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image",
+    title: site.title,
+    description: "Book an hour-long OPD window, follow the live token queue and stop waiting all morning.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

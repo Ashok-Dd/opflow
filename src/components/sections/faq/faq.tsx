@@ -2,6 +2,14 @@ import { Container, Heading } from "@/components/site/primitives";
 
 export const faqs = [
   {
+    q: "What is OPflow?",
+    a: "OPflow is an OPD appointment booking app for India. You find a doctor by specialty, symptom or hospital, book an hour-long OPD window, pay online and follow the doctor's live token queue from your phone. It works in English and Telugu.",
+  },
+  {
+    q: "How do I book an OPD appointment online?",
+    a: "Search for a doctor, pick a day and an hour-long window, and pay online with UPI, card or net banking. On the day, your phone shows the live token queue so you can leave home when it's nearly your turn.",
+  },
+  {
     q: "Will I be seen at an exact time?",
     a: "No, and nobody honest can promise that in an OPD. You book an hour-long window, and the app keeps your estimate updated from the doctor's live queue.",
   },
