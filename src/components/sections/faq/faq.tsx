@@ -1,7 +1,13 @@
+import Link from "next/link";
 import { Container, Heading } from "@/components/site/primitives";
-import { company, site } from "@/lib/site";
+import { localePath, type Lang } from "@/lib/i18n";
+import { getT } from "@/lib/i18n/server";
+import { company, guidePages, site } from "@/lib/site";
 
-export const faqs = [
+/** An answer may hold {0}, {1} slots, filled from `args` after translation. */
+type FaqItem = { q: string; a: string; args?: string[] };
+
+export const faqs: FaqItem[] = [
   {
     q: "What is OPflow?",
     a: "OPflow is an OPD appointment booking app for India. You find a doctor by specialty, symptom or hospital, book an hour-long OPD window, pay online and follow the doctor's live token queue from your phone. It works in English and Telugu.",
@@ -32,7 +38,8 @@ export const faqs = [
   },
   {
     q: "I'm a doctor. What does it take to get started?",
-    a: `Write to ${site.email} or call us on ${company.phone}. The OPflow team verifies your qualifications and medical registration and sets up your account, then gives you an OPD ID and password. You set your OPD days, hours and patients per hour in the app or on the doctor website, and patients can start booking.`,
+    a: "Write to {0} or call us on {1}. The OPflow team verifies your qualifications and medical registration and sets up your account, then gives you an OPD ID and password. You set your OPD days, hours and patients per hour in the app or on the doctor website, and patients can start booking.",
+    args: [site.email, company.phone],
   },
   {
     q: "How does OPflow suggest the right doctor?",
@@ -54,26 +61,35 @@ export const faqs = [
 
 const phoneHref = `tel:${company.phone.replace(/[^\d+]/g, "")}`;
 
-export function Faq() {
+/** The questions and answers in a language, as plain text (for the page and for search-engine data). */
+export function faqText(lang: Lang) {
+  const { t, tf } = getT(lang);
+  return faqs.map((f) => ({ q: t(f.q), a: tf(f.a, ...(f.args ?? [])) }));
+}
+
+export function Faq({ lang }: { lang: Lang }) {
+  const { t } = getT(lang);
+  const items = faqText(lang);
+
   return (
     <section id="faq" className="border-t border-rule py-20 sm:py-28">
       <Container className="grid gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
-            <Heading>Things people ask us.</Heading>
+            <Heading>{t("Things people ask us.")}</Heading>
 
             {/* A slip with a person's contact on it, for whatever the questions here don't cover. */}
             <aside className="mt-10 rounded-[4px] border border-rule bg-white">
               <p className="border-b border-dashed border-rule px-5 py-3 font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">
-                Still stuck?
+                {t("Still stuck?")}
               </p>
               <div className="px-5 py-4">
-                <p className="font-serif text-2xl leading-tight">Ask a person.</p>
+                <p className="font-serif text-2xl leading-tight">{t("Ask a person.")}</p>
                 <dl className="mt-4 space-y-2 text-[15px]">
                   {[
-                    ["Email", site.email, `mailto:${site.email}`],
-                    ["Phone", company.phone, phoneHref],
-                    ["Hours", site.supportHours, null],
+                    [t("Email"), site.email, `mailto:${site.email}`],
+                    [t("Phone"), company.phone, phoneHref],
+                    [t("Hours"), t(site.supportHours), null],
                   ].map(([label, value, href]) => (
                     <div key={label} className="grid grid-cols-[56px_1fr] gap-3">
                       <dt className="font-mono text-[11px] leading-6 tracking-[0.14em] text-ink-soft uppercase">{label}</dt>
@@ -95,8 +111,8 @@ export function Faq() {
         </div>
 
         <div className="border-t-[1.5px] border-ink lg:col-span-8">
-          {faqs.map((f, i) => (
-            <details key={f.q} className="faq-item scroll-rise group border-b border-rule">
+          {items.map((f, i) => (
+            <details key={faqs[i].q} className="faq-item scroll-rise group border-b border-rule">
               <summary className="grid cursor-pointer list-none grid-cols-[2.25rem_1fr_auto] items-start gap-x-3 py-5 [&::-webkit-details-marker]:hidden">
                 <span className="pt-1.5 font-mono text-xs text-ink-soft transition-colors group-open:text-fern">
                   {String(i + 1).padStart(2, "0")}
@@ -114,6 +130,19 @@ export function Faq() {
               <p className="max-w-2xl pb-6 pl-[3.25rem] leading-relaxed text-ink-soft">{f.a}</p>
             </details>
           ))}
+
+          <nav className="mt-8" aria-label={t("Guides")}>
+            <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">{t("Read the guides")}</p>
+            <ul className="mt-3 flex flex-wrap gap-x-8 gap-y-2">
+              {guidePages.map((p) => (
+                <li key={p.href}>
+                  <Link href={localePath(lang, p.href)} className="underline decoration-rule underline-offset-4 hover:decoration-fern">
+                    {t(p.label)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
       </Container>
     </section>

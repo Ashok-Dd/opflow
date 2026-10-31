@@ -1,4 +1,7 @@
+"use client";
+
 import type { RefObject } from "react";
+import { useT } from "@/lib/i18n/context";
 
 export const steps = [
   { title: "Find a doctor", text: "By specialty, by symptom or by hospital." },
@@ -12,6 +15,7 @@ export const steps = [
 
 /** The seven stops, with a line that fills as the page scrolls. `progress` runs 0 → 1. */
 export function RouteSteps({ progress, listRef }: { progress: number; listRef: RefObject<HTMLOListElement | null> }) {
+  const { t } = useT();
   return (
     <ol ref={listRef} className="relative">
       {/* track + fill */}
@@ -35,9 +39,9 @@ export function RouteSteps({ progress, listRef }: { progress: number; listRef: R
             </span>
             <div className="pt-0.5">
               <p className={`font-serif text-[1.4rem] leading-tight transition-colors duration-300 ${reached ? "text-ink" : "text-ink-soft"}`}>
-                {s.title}
+                {t(s.title)}
               </p>
-              <p className="mt-1.5 max-w-md text-ink-soft">{s.text}</p>
+              <p className="mt-1.5 max-w-md text-ink-soft">{t(s.text)}</p>
             </div>
           </li>
         );

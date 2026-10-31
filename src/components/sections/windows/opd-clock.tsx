@@ -1,5 +1,7 @@
 "use client";
 
+import type { Lang } from "@/lib/i18n";
+import { useT } from "@/lib/i18n/context";
 import { useInView } from "@/lib/use-in-view";
 import type { Booking } from "./window-planner";
 
@@ -10,11 +12,14 @@ const TRACK_R = 157;
 const windowStarts = [9, 10, 11, 12];
 const EASE = "cubic-bezier(0.3,0.7,0.2,1)";
 
-export const fmt = (t: number) => {
+/** A clock time such as 10.17 as "10:10 AM", or "ఉ. 10:10" in Telugu. */
+export const fmt = (t: number, lang: Lang = "en") => {
   const h = Math.floor(t);
   const m = Math.round((t - h) * 60);
   const hh = h > 12 ? h - 12 : h;
-  return `${hh}:${String(m).padStart(2, "0")} ${h >= 12 ? "PM" : "AM"}`;
+  const clock = `${hh}:${String(m).padStart(2, "0")}`;
+  if (lang === "te") return `${h < 12 ? "ఉ." : h < 16 ? "మ." : "సా."} ${clock}`;
+  return `${clock} ${h >= 12 ? "PM" : "AM"}`;
 };
 
 const polar = (deg: number, r: number) => {
@@ -53,13 +58,14 @@ export function OpdClock({
   onHover: (w: number | null) => void;
   onBook: (w: number) => void;
 }) {
+  const { lang, t, tf } = useT();
   const [ref, shown] = useInView<SVGSVGElement>(0.35);
 
   const isFull = (w: number) => booked[w] >= PER_WINDOW && mine?.w !== w;
   const peek = hovered !== null && !isFull(hovered) ? hovered : null;
 
   // Hands wind in from 9:00, rest at 10:10, preview the hovered window, and settle on your turn.
-  const t = !shown
+  const hand = !shown
     ? 9
     : peek !== null
       ? windowStarts[peek] + (mine?.w === peek ? mine.seat : booked[peek]) * (AVG_MIN / 60)
@@ -71,14 +77,14 @@ export function OpdClock({
           key: `h${hovered}`,
           label: labels[hovered],
           value: isFull(hovered)
-            ? "Full"
+            ? t("Full")
             : mine?.w === hovered
-              ? "Your window"
-              : `${PER_WINDOW - booked[hovered]} of ${PER_WINDOW} open`,
+              ? t("Your window")
+              : tf("{0} of {1} open", PER_WINDOW - booked[hovered], PER_WINDOW),
         }
       : mine && expectedAt !== null
-        ? { key: `m${expectedAt}`, label: "Expected turn", value: fmt(expectedAt) }
-        : { key: "idle", label: "OPD today", value: "9 AM – 1 PM" };
+        ? { key: `m${expectedAt}`, label: t("Expected turn"), value: fmt(expectedAt, lang) }
+        : { key: "idle", label: t("OPD today"), value: t("9 AM – 1 PM") };
 
   return (
     <svg
@@ -86,7 +92,7 @@ export function OpdClock({
       viewBox="0 0 400 400"
       className="h-auto w-full overflow-visible select-none"
       role="group"
-      aria-label="OPD clock, 9 AM to 1 PM"
+      aria-label={t("OPD clock, 9 AM to 1 PM")}
     >
       <g
         style={{
@@ -164,7 +170,7 @@ export function OpdClock({
               key={start}
               role="button"
               tabIndex={full ? -1 : 0}
-              aria-label={`${labels[w]}: ${full ? "full" : `${PER_WINDOW - booked[w]} places open`}`}
+              aria-label={full ? tf("{0}: full", labels[w]) : tf("{0}: {1} places open", labels[w], PER_WINDOW - booked[w])}
               aria-disabled={full}
               onClick={() => !full && onBook(w)}
               onMouseEnter={() => onHover(w)}
@@ -252,10 +258,10 @@ export function OpdClock({
 
         {/* hands */}
         <g pointerEvents="none">
-          <g style={spin(t * 30, 1200)}>
+          <g style={spin(hand * 30, 1200)}>
             <path d={`M ${C - 4.5} ${C + 16} L ${C - 2.6} ${C - 70} L ${C} ${C - 78} L ${C + 2.6} ${C - 70} L ${C + 4.5} ${C + 16} Z`} fill="var(--color-grove)" />
           </g>
-          <g style={spin(t * 360, 1200)}>
+          <g style={spin(hand * 360, 1200)}>
             <path d={`M ${C - 3} ${C + 20} L ${C - 1.6} ${C - 112} L ${C} ${C - 120} L ${C + 1.6} ${C - 112} L ${C + 3} ${C + 20} Z`} fill="var(--color-grove)" />
           </g>
           <g className={shown ? "animate-[spin_60s_linear_infinite]" : ""} style={{ transformOrigin: `${C}px ${C}px` }}>

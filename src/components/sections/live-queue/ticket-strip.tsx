@@ -1,4 +1,7 @@
+"use client";
+
 import type { CSSProperties } from "react";
+import { useT } from "@/lib/i18n/context";
 import styles from "./ticket-strip.module.css";
 
 /** Thin and thick bars that look like a barcode, the same for the same token every time. */
@@ -20,6 +23,7 @@ function Barcode({ token }: { token: number }) {
  * slides forward, so the tickets between the front and `mine` are the people ahead of you.
  */
 export function TicketStrip({ first, last, serving, mine }: { first: number; last: number; serving: number; mine: number }) {
+  const { t, tf } = useT();
   const tokens = Array.from({ length: last - first + 1 }, (_, i) => first + i);
   const ahead = Math.max(0, mine - serving - 1);
 
@@ -39,16 +43,16 @@ export function TicketStrip({ first, last, serving, mine }: { first: number; las
                 style={{ "--i": i } as CSSProperties}
               >
                 <span className={styles.band} />
-                <span className={styles.label}>{token === mine ? "Yours" : "Token"}</span>
+                <span className={styles.label}>{token === mine ? t("Yours") : t("Token")}</span>
                 <span className={styles.number}>{String(token).padStart(3, "0")}</span>
                 <Barcode token={token} />
-                {token === mine && state === "serving" && <span className={styles.stamp}>Your turn</span>}
+                {token === mine && state === "serving" && <span className={styles.stamp}>{t("Your turn")}</span>}
               </div>
             );
           })}
         </div>
         <div className={styles.bracket} data-visible={ahead > 0} style={{ "--ahead": ahead } as CSSProperties}>
-          <span>{ahead} ahead of you</span>
+          <span>{tf("{0} ahead of you", ahead)}</span>
         </div>
       </div>
     </div>

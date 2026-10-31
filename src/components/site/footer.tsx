@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { localePath, type Lang } from "@/lib/i18n";
+import { getT } from "@/lib/i18n/server";
 import { company, guidePages, legalPages, site } from "@/lib/site";
 import { Logo } from "./logo";
 import { Container } from "./primitives";
 import { SectionLink } from "./section-link";
 import { StoreButtons } from "./store-buttons";
+import { TornEdge } from "./torn-edge";
 
 const groups = [
   {
@@ -29,24 +32,28 @@ const groups = [
   { title: "Legal", links: legalPages.map((p) => [p.label, p.href]) },
 ];
 
-/** Who to reach and where, set like the contact block at the foot of a printed form. */
-const contacts = [
-  { label: "Email", value: site.email, href: `mailto:${site.email}` },
-  { label: "Phone", value: company.phone, href: `tel:${company.phone.replace(/[^\d+]/g, "")}` },
-  { label: "Office", value: company.address, href: null },
-].filter((c) => c.value);
-
 const linkClass = "text-mint/90 transition-colors hover:text-white hover:underline hover:underline-offset-4";
 
-export function Footer() {
+export function Footer({ lang = "en" }: { lang?: Lang }) {
+  const { t } = getT(lang);
+
+  /** Who to reach and where, set like the contact block at the foot of a printed form. */
+  const contacts = [
+    { label: t("Email"), value: site.email, href: `mailto:${site.email}` },
+    { label: t("Phone"), value: company.phone, href: `tel:${company.phone.replace(/[^\d+]/g, "")}` },
+    { label: t("Office"), value: t(company.address), href: null },
+  ].filter((c) => c.value);
+
   return (
-    <footer className="bg-forest text-paper">
+    <footer className="relative bg-forest text-paper">
+      <TornEdge side="top" className="text-forest" />
       <Container className="pt-20 pb-10">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
           <p className="scroll-rise font-serif text-balance text-[2rem] leading-[1.15] sm:text-[2.8rem] lg:col-span-8">
-            Right patient, right doctor, <span className="text-leaf italic">at the right time.</span>
+            {t("Right patient, right doctor, ")}
+            <span className="text-leaf italic">{t("at the right time.")}</span>
           </p>
-          <StoreButtons tone="light" className="lg:col-span-4 lg:justify-end" />
+          <StoreButtons tone="light" lang={lang} className="lg:col-span-4 lg:justify-end" />
         </div>
 
         <dl className="mt-14 grid border-y border-mint/25 sm:grid-cols-3">
@@ -70,24 +77,24 @@ export function Footer() {
           <div className="lg:col-span-4">
             <Logo tone="light" />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-mint/80">
-              OPD appointments and patient flow for clinics and hospitals in India.
+              {t("OPD appointments and patient flow for clinics and hospitals in India.")}
             </p>
           </div>
 
-          <nav className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-7 lg:col-start-6" aria-label="Footer">
+          <nav className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-7 lg:col-start-6" aria-label={t("Footer")}>
             {groups.map((g) => (
               <div key={g.title}>
-                <p className="font-mono text-[11px] tracking-[0.14em] text-mint/75 uppercase">{g.title}</p>
+                <p className="font-mono text-[11px] tracking-[0.14em] text-mint/75 uppercase">{t(g.title)}</p>
                 <ul className="mt-4 space-y-2.5">
                   {g.links.map(([label, href]) => (
                     <li key={href}>
                       {href.startsWith("/#") ? (
                         <SectionLink id={href.slice(2)} className={linkClass}>
-                          {label}
+                          {t(label)}
                         </SectionLink>
                       ) : (
-                        <Link href={href} className={linkClass}>
-                          {label}
+                        <Link href={localePath(lang, href)} className={linkClass}>
+                          {t(label)}
                         </Link>
                       )}
                     </li>
@@ -100,10 +107,10 @@ export function Footer() {
 
         <div className="mt-16 flex flex-col gap-4 border-t border-mint/20 pt-6 text-[13px] text-mint/75 sm:flex-row sm:items-start sm:justify-between">
           <p className="max-w-2xl">
-            OPflow is a booking platform, not a healthcare provider or an emergency service, and does not give medical
-            advice. In an emergency, call{" "}
-            <a href="tel:112" className="text-paper underline underline-offset-2">112</a> or{" "}
-            <a href="tel:108" className="text-paper underline underline-offset-2">108</a>.
+            {t("OPflow is a booking platform, not a healthcare provider or an emergency service, and does not give medical advice. In an emergency, call")}{" "}
+            <a href="tel:112" className="text-paper underline underline-offset-2">112</a> {t("or")}{" "}
+            <a href="tel:108" className="text-paper underline underline-offset-2">108</a>
+            {t("~after-emergency-numbers")}.
           </p>
           <div className="flex shrink-0 items-center gap-6">
             <p>
@@ -111,7 +118,7 @@ export function Footer() {
               {company.cin && <span className="block">CIN {company.cin}</span>}
             </p>
             <SectionLink id="top" className="font-mono text-[11px] tracking-[0.14em] uppercase transition-colors hover:text-white">
-              Back to top ↑
+              {t("Back to top ↑")}
             </SectionLink>
           </div>
         </div>

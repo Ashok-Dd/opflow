@@ -1,4 +1,6 @@
 import { Container, Heading } from "@/components/site/primitives";
+import type { Lang } from "@/lib/i18n";
+import { getT } from "@/lib/i18n/server";
 import { EmergencySign } from "./emergency-sign";
 import { UrgentConsole } from "./urgent-console";
 
@@ -16,31 +18,29 @@ function SirenIcon() {
   );
 }
 
-export function UrgentCare() {
+export function UrgentCare({ lang }: { lang: Lang }) {
+  const { t } = getT(lang);
   return (
     <section id="urgent" className="border-t border-rule pb-20 sm:pb-28">
-      <EmergencySign />
+      <EmergencySign lang={lang} />
 
       <Container className="pt-16 sm:pt-20">
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-6">
             <Heading>
               <span className="inline-flex items-center">
-                Emergency
+                {t("Emergency")}
                 <span className="ml-3 inline-flex items-center gap-0.5">
                   <SirenIcon />?
                 </span>
               </span>
               <span className="mt-3 block text-[0.62em] leading-snug">
-                Find doctors and hospitals available for emergencies right now.
+                {t("Find doctors and hospitals available for emergencies right now.")}
               </span>
             </Heading>
           </div>
           <p className="text-[17px] leading-relaxed text-ink-soft lg:col-span-5 lg:col-start-8 lg:pt-3">
-            Pick what&apos;s happening and OPflow shows first-aid steps based on WHO guidance, which work without
-            internet, then doctors and 24-hour hospitals near you with distance, a call button and directions. You can
-            book an emergency consultation and go to the top of the doctor&apos;s line. It doesn&apos;t diagnose. It
-            gets you to care.
+            {t("Pick what's happening and OPflow shows first-aid steps based on WHO guidance, which work without internet, then doctors and 24-hour hospitals near you with distance, a call button and directions. You can book an emergency consultation and go to the top of the doctor's line. It doesn't diagnose. It gets you to care.")}
           </p>
         </div>
 

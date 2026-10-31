@@ -1,0 +1,80 @@
+/*
+ * The token stub at the foot of the booking slip. Once the booking is confirmed it prints out from under the
+ * slip; at the last stop it is torn off along its perforation and drops, slightly askew, to be kept.
+ */
+
+.stub {
+  position: relative;
+  margin: 0 20px;
+  padding: 12px 16px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1.5px dashed rgb(23 34 29 / 0.4);
+  background: #fff;
+  font-family: var(--font-mono);
+  transform-origin: 0 0;
+}
+
+/* The two round notches punched out where the stub is perforated. */
+.stub::before,
+.stub::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-paper);
+}
+
+.stub::before {
+  left: -7px;
+}
+
+.stub::after {
+  right: -7px;
+}
+
+.stub[data-state="out"] {
+  animation: stub-out 650ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.stub[data-state="torn"] {
+  /* a ragged top edge, where it came away from the slip */
+  clip-path: polygon(
+    0 4px, 8.333% 0, 16.667% 4px, 25% 0, 33.333% 4px, 41.667% 0, 50% 4px, 58.333% 0, 66.667% 4px, 75% 0,
+    83.333% 4px, 91.667% 0, 100% 4px, 100% 100%, 0 100%
+  );
+  border-top-color: transparent;
+  animation: stub-tear 900ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.stub[data-state="torn"]::before,
+.stub[data-state="torn"]::after {
+  display: none;
+}
+
+@keyframes stub-out {
+  from {
+    clip-path: inset(0 0 100% 0);
+    translate: 0 -24px;
+  }
+  to {
+    clip-path: inset(0);
+    translate: 0 0;
+  }
+}
+
+@keyframes stub-tear {
+  0% {
+    transform: none;
+  }
+  14% {
+    transform: translate(-2px, -3px) rotate(-1.5deg);
+  }
+  100% {
+    transform: translate(10px, 12px) rotate(4deg);
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type CSSProperties, type PointerEvent } from "react";
 import { PauseButton } from "@/components/site/pause-button";
+import { useT } from "@/lib/i18n/context";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { AXIS, slips, timeToX, WINDOWS } from "./hall-layout";
@@ -31,6 +32,7 @@ const SWITCH_EVERY = 4600;
  * while on screen (with a pause button), and the tabs let the visitor choose.
  */
 export function WaitingHall() {
+  const { t, tf } = useT();
   const reduced = useReducedMotion();
   const [ref, inView] = useInView<HTMLElement>(0.25);
   const [mode, setMode] = useState<0 | 1>(0);
@@ -64,17 +66,17 @@ export function WaitingHall() {
   return (
     <figure ref={ref} className="rounded-[4px] bg-paper text-ink">
       <figcaption className="flex items-center justify-between border-b border-rule px-4 py-3 font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase sm:px-6">
-        <span>Fig. 1 · The OPD waiting hall</span>
-        <span>9:30 AM</span>
+        <span>{t("Fig. 1 · The OPD waiting hall")}</span>
+        <span>{t("9:30 AM")}</span>
       </figcaption>
 
       <div className="px-4 pt-5 pb-4 sm:px-6 sm:pt-6">
         <p className="sr-only">
-          Without OPflow, about {HALL[0]} people crowd the hall at 9:30. With OPflow, about {HALL[1]}.
+          {tf("Without OPflow, about {0} people crowd the hall at 9:30. With OPflow, about {1}.", HALL[0], HALL[1])}
         </p>
 
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
-          <div className="flex rounded-[4px] border border-ink/25 p-0.5" role="tablist" aria-label="Compare arrivals">
+          <div className="flex rounded-[4px] border border-ink/25 p-0.5" role="tablist" aria-label={t("Compare arrivals")}>
             {MODES.map((m, i) => (
               <button
                 key={m.title}
@@ -89,8 +91,8 @@ export function WaitingHall() {
                   mode === i ? "bg-ink text-paper" : "text-ink-soft hover:text-ink"
                 }`}
               >
-                <span className="block text-sm font-semibold">{m.title}</span>
-                <span className="block text-[12px] opacity-80">{m.line}</span>
+                <span className="block text-sm font-semibold">{t(m.title)}</span>
+                <span className="block text-[12px] opacity-80">{t(m.line)}</span>
               </button>
             ))}
           </div>
@@ -102,7 +104,7 @@ export function WaitingHall() {
                 <span className="block text-forest">{HALL[1]}</span>
               </span>
             </span>
-            <span className="max-w-[7rem] text-[13px] leading-tight text-ink-soft">people in the hall</span>
+            <span className="max-w-[7rem] text-[13px] leading-tight text-ink-soft">{t("people in the hall")}</span>
           </p>
         </div>
 
@@ -153,7 +155,7 @@ export function WaitingHall() {
                 }`}
                 style={{ left: `${timeToX(a.hour)}%` }}
               >
-                {a.label}
+                {t(a.label)}
               </span>
             ))}
           </div>
@@ -162,7 +164,7 @@ export function WaitingHall() {
 
       <div className="flex items-center justify-between gap-6 border-t border-rule px-4 py-3 sm:px-6">
         <p key={mode} className="animate-fade-up font-serif text-[15px] leading-snug text-ink italic sm:text-base">
-          {MODES[mode].caption}
+          {t(MODES[mode].caption)}
         </p>
         <PauseButton paused={paused || reduced} onToggle={() => setPaused((p) => !p)} label="arrivals animation" className="shrink-0" />
       </div>

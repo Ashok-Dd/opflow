@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { useT } from "@/lib/i18n/context";
+import { rich } from "@/lib/i18n/rich";
 import { OpdClock, fmt } from "./opd-clock";
 
 export type Booking = { w: number; seat: number };
@@ -8,7 +10,7 @@ export type Booking = { w: number; seat: number };
 const PER_WINDOW = 8;
 const AVG_MIN = 7.5;
 const initialBooked = [8, 6, 3, 1];
-const labels = ["9 – 10 AM", "10 – 11 AM", "11 AM – 12 PM", "12 – 1 PM"];
+const windowNames = ["9 – 10 AM", "10 – 11 AM", "11 AM – 12 PM", "12 – 1 PM"];
 const delays = [
   { min: 0, label: "On time", dot: "bg-fern" },
   { min: 15, label: "~15 min late", dot: "bg-led" },
@@ -16,6 +18,8 @@ const delays = [
 ];
 
 export function WindowPlanner({ intro }: { intro: ReactNode }) {
+  const { lang, t, tf } = useT();
+  const labels = windowNames.map(t);
   const [booked, setBooked] = useState(initialBooked);
   const [mine, setMine] = useState<Booking | null>(null);
   const [delay, setDelay] = useState(0);
@@ -37,7 +41,7 @@ export function WindowPlanner({ intro }: { intro: ReactNode }) {
       <div>
         {intro}
 
-        <ul className="mt-8 grid gap-3 sm:grid-cols-2" aria-label="Hour windows">
+        <ul className="mt-8 grid gap-3 sm:grid-cols-2" aria-label={t("Hour windows")}>
           {labels.map((l, w) => {
             const full = booked[w] >= PER_WINDOW && mine?.w !== w;
             const isMine = mine?.w === w;
@@ -68,7 +72,7 @@ export function WindowPlanner({ intro }: { intro: ReactNode }) {
                         full ? "text-stone" : isMine ? "text-grove" : "text-grove/80"
                       }`}
                     >
-                      {isMine ? "Yours" : full ? "Full" : `${open} of ${PER_WINDOW} open`}
+                      {isMine ? t("Yours") : full ? t("Full") : tf("{0} of {1} open", open, PER_WINDOW)}
                     </span>
                   </span>
                   <span className="mt-2.5 flex gap-1" aria-hidden="true">
@@ -96,23 +100,26 @@ export function WindowPlanner({ intro }: { intro: ReactNode }) {
         <div className="mt-6 rounded-2xl bg-grove px-6 py-5 text-white" aria-live="polite">
           {mine && expectedAt !== null ? (
             <div key={`${mine.w}-${delay}`} className="animate-flip-in">
-              <p className="font-mono text-[11px] tracking-[0.14em] text-mint/75 uppercase">Your booking</p>
+              <p className="font-mono text-[11px] tracking-[0.14em] text-mint/75 uppercase">{t("Your booking")}</p>
               <p className="mt-1 font-serif text-2xl">
-                {labels[mine.w]} · Token {mine.w * PER_WINDOW + mine.seat + 1}
+                {labels[mine.w]} · {tf("Token {0}", mine.w * PER_WINDOW + mine.seat + 1)}
               </p>
               <p className="mt-1 text-white/80">
-                Expected around <span className="font-mono text-leaf">{fmt(expectedAt)}</span>. Arrive by{" "}
-                {fmt(9 + mine.w - 10 / 60)}.
+                {rich(
+                  t("Expected around {0}. Arrive by {1}."),
+                  <span className="font-mono text-leaf">{fmt(expectedAt, lang)}</span>,
+                  fmt(9 + mine.w - 10 / 60, lang),
+                )}
               </p>
             </div>
           ) : (
-            <p className="text-white/90">Tap an open window on the dial or in the list to book a place.</p>
+            <p className="text-white/90">{t("Tap an open window on the dial or in the list to book a place.")}</p>
           )}
         </div>
 
         <div className="mt-6">
-          <p className="text-sm text-ink-soft">If the doctor&apos;s day changes, the red marker moves:</p>
-          <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label="Doctor status">
+          <p className="text-sm text-ink-soft">{t("If the doctor's day changes, the red marker moves:")}</p>
+          <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label={t("Doctor status")}>
             {delays.map((d, i) => (
               <button
                 key={d.label}
@@ -130,7 +137,7 @@ export function WindowPlanner({ intro }: { intro: ReactNode }) {
                 }`}
               >
                 <span className={`size-2.5 rounded-full ${d.dot}`} aria-hidden="true" />
-                {d.label}
+                {t(d.label)}
               </button>
             ))}
           </div>
@@ -148,10 +155,10 @@ export function WindowPlanner({ intro }: { intro: ReactNode }) {
           onBook={book}
         />
         <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[13px] text-ink-soft">
-          <Key swatch="rounded-[3px] bg-grove">Open window</Key>
-          <Key swatch="rounded-[3px] border border-stone bg-white">Full</Key>
-          <Key swatch="rounded-full bg-leaf">Yours</Key>
-          <Key swatch="rounded-[3px] bg-alarm">Expected turn</Key>
+          <Key swatch="rounded-[3px] bg-grove">{t("Open window")}</Key>
+          <Key swatch="rounded-[3px] border border-stone bg-white">{t("Full")}</Key>
+          <Key swatch="rounded-full bg-leaf">{t("Yours")}</Key>
+          <Key swatch="rounded-[3px] bg-alarm">{t("Expected turn")}</Key>
         </div>
       </div>
     </div>

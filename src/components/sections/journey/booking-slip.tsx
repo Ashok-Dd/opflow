@@ -1,22 +1,27 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { useT } from "@/lib/i18n/context";
+import styles from "./booking-slip.module.css";
 
 /**
  * The confirmation, drawn as the printed OPD slip patients already know.
  * `stage` is how many of the seven stops are done; each one fills its part of the form.
  */
 export function BookingSlip({ stage }: { stage: number }) {
+  const { t, tf } = useT();
   const confirmed = stage >= 6;
 
   const rows: [string, ReactNode, number][] = [
-    ["Date", "Thu, 24 Sep", 3],
-    ["Window", "10:00 – 11:00 AM", 3],
-    ["Arrive by", "9:50 AM", 3],
-    ["Note", "Fever for two days", 4],
+    [t("Date"), t("Thu, 24 Sep"), 3],
+    [t("Window"), t("10:00 – 11:00 AM"), 3],
+    [t("Arrive by"), t("9:50 AM"), 3],
+    [t("Note"), t("Fever for two days"), 4],
     [
-      "Fee",
+      t("Fee"),
       stage >= 5 ? (
         <>
-          ₹400 · <span className="text-fern">Paid (UPI)</span>
+          ₹400 · <span className="text-fern">{t("Paid (UPI)")}</span>
         </>
       ) : (
         "₹400"
@@ -29,7 +34,7 @@ export function BookingSlip({ stage }: { stage: number }) {
     <figure className="relative mx-auto max-w-[380px] rotate-[0.6deg]">
       <div className="relative bg-white px-6 pt-6 pb-7 font-mono text-[13px] shadow-[0_1px_0_var(--color-rule),0_18px_30px_-18px_rgba(23,34,29,0.35)]">
         <div className="flex items-baseline justify-between border-b border-dashed border-ink/40 pb-3">
-          <span className="font-sans text-[15px] font-semibold">OPflow · OPD booking</span>
+          <span className="font-sans text-[15px] font-semibold">{t("OPflow · OPD booking")}</span>
           <Field on={confirmed} w="w-16">
             <span className="text-ink-soft">OPF-0918</span>
           </Field>
@@ -37,13 +42,13 @@ export function BookingSlip({ stage }: { stage: number }) {
 
         <div className="space-y-0.5 border-b border-dashed border-ink/40 py-4 font-sans">
           <Field on={stage >= 1} w="w-40" h="h-7">
-            <p className="text-lg font-semibold">Dr. Meera Iyer</p>
+            <p className="text-lg font-semibold">{t("Dr. Meera Iyer")}</p>
           </Field>
           <Field on={stage >= 1} w="w-48" h="h-[22px]">
-            <p className="text-ink-soft">General Medicine · MBBS, MD</p>
+            <p className="text-ink-soft">{t("General Medicine · MBBS, MD")}</p>
           </Field>
           <Field on={stage >= 2} w="w-44" h="h-[22px]">
-            <p className="text-ink-soft">City Care Hospital · Room 4</p>
+            <p className="text-ink-soft">{t("City Care Hospital · Room 4")}</p>
           </Field>
         </div>
 
@@ -54,7 +59,7 @@ export function BookingSlip({ stage }: { stage: number }) {
                 <dt className="w-20 shrink-0 text-ink-soft uppercase">{k}</dt>
                 <dd>
                   <Field on={stage >= at} w="w-28">
-                    <span key={String(stage >= 5 && k === "Fee")} className="animate-fade-up">
+                    <span key={String(stage >= 5 && k === t("Fee"))} className="animate-fade-up">
                       {v}
                     </span>
                   </Field>
@@ -63,7 +68,7 @@ export function BookingSlip({ stage }: { stage: number }) {
             ))}
           </dl>
           <div className="text-right">
-            <p className="text-[11px] text-ink-soft uppercase">Token</p>
+            <p className="text-[11px] text-ink-soft uppercase">{t("Token")}</p>
             <p className="mt-1 text-5xl leading-none font-semibold">
               {confirmed ? <span className="inline-block animate-fade-up">18</span> : <span className="text-ink/15">—</span>}
             </p>
@@ -71,8 +76,7 @@ export function BookingSlip({ stage }: { stage: number }) {
         </div>
 
         <p className="pt-4 font-sans text-[13px] leading-relaxed text-ink-soft">
-          This is an expected window, not an exact time. If the doctor runs late, the app will tell you before you
-          leave.
+          {t("This is an expected window, not an exact time. If the doctor runs late, the app will tell you before you leave.")}
         </p>
 
         {confirmed && (
@@ -80,7 +84,7 @@ export function BookingSlip({ stage }: { stage: number }) {
             className="absolute top-[4.6rem] right-6 animate-stamp-in border-2 border-fern px-2 py-0.5 font-sans text-sm font-semibold tracking-[0.2em] text-fern uppercase [--stamp-tilt:-9deg]"
             aria-hidden="true"
           >
-            Confirmed
+            {t("Confirmed")}
           </span>
         )}
       </div>
@@ -92,9 +96,20 @@ export function BookingSlip({ stage }: { stage: number }) {
         aria-hidden="true"
       />
 
+      {/* the token stub: prints out once confirmed, is torn off at the last stop */}
+      {confirmed && (
+        <div className={styles.stub} data-state={stage >= 7 ? "torn" : "out"} aria-hidden="true">
+          <span className="text-[11px] leading-snug tracking-[0.12em] text-ink-soft uppercase">
+            {t("Token stub")}
+            <span className="block normal-case tracking-normal text-ink">{t("OPF-0918 · Keep this")}</span>
+          </span>
+          <span className="text-4xl leading-none font-semibold">18</span>
+        </div>
+      )}
+
       {/* the live line, once the slip exists */}
       <div
-        className={`mx-3 mt-3 flex items-center justify-between bg-forest px-4 py-3 font-mono text-[12px] text-mint transition-[opacity,translate] duration-500 ${
+        className={`mx-3 ${confirmed ? "mt-6" : "mt-3"} flex items-center justify-between bg-forest px-4 py-3 font-mono text-[12px] text-mint transition-[opacity,translate] duration-500 ${
           stage >= 7 ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
         }`}
         aria-hidden={stage < 7}
@@ -104,15 +119,15 @@ export function BookingSlip({ stage }: { stage: number }) {
             <span className="absolute inset-0 animate-ping rounded-full bg-leaf/70" />
             <span className="relative size-2 rounded-full bg-leaf" />
           </span>
-          LIVE · Now serving 14
+          {t("LIVE · Now serving 14")}
         </span>
         <span>
-          <span className="text-leaf">3 ahead</span> · ~25 min
+          <span className="text-leaf">{t("3 ahead")}</span> · {t("~25 min")}
         </span>
       </div>
 
       <figcaption className="mt-4 text-center font-mono text-[11px] tracking-[0.12em] text-ink-soft uppercase" aria-live="polite">
-        {confirmed ? "What you get after paying" : `Filling in as you go · ${stage} of 7`}
+        {confirmed ? t("What you get after paying") : tf("Filling in as you go · {0} of 7", stage)}
       </figcaption>
     </figure>
   );

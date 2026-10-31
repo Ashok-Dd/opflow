@@ -3,8 +3,11 @@ import type { ReactNode } from "react";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
 import { JsonLd } from "@/components/site/json-ld";
+import { PageShell } from "@/components/site/page-shell";
 import { Container } from "@/components/site/primitives";
 import { StoreButtons } from "@/components/site/store-buttons";
+import { localePath, type Lang } from "@/lib/i18n";
+import { getT } from "@/lib/i18n/server";
 import { guidePages, site } from "@/lib/site";
 
 export type GuideSection = { id: string; title: string; body: ReactNode };
@@ -13,8 +16,10 @@ export type GuideFaq = { q: string; a: string };
 /**
  * A plain-language page that answers one thing people search for. Same look as the legal pages
  * (the `.legal` article styles), plus breadcrumb and FAQ structured data for search engines.
+ * `path` is the English path (e.g. "/for-doctors"); the page lives at its Telugu address too.
  */
 export function GuidePage({
+  lang,
   path,
   title,
   intro,
@@ -22,6 +27,7 @@ export function GuidePage({
   faqs = [],
   cta,
 }: {
+  lang: Lang;
   path: string;
   title: string;
   intro: ReactNode;
@@ -29,13 +35,26 @@ export function GuidePage({
   faqs?: GuideFaq[];
   cta: { heading: string; text: string };
 }) {
+  const { t } = getT(lang);
+  const url = `${site.url}${localePath(lang, path)}`;
   const jsonLd: object[] = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": url,
+      url,
+      name: title,
+      inLanguage: lang === "te" ? "te-IN" : "en-IN",
+      dateModified: guidePages.find((p) => p.href === path)?.updated,
+      isPartOf: { "@id": `${site.url}/#website` },
+      publisher: { "@id": `${site.url}/#organization` },
+    },
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "OPflow", item: site.url },
-        { "@type": "ListItem", position: 2, name: title, item: `${site.url}${path}` },
+        { "@type": "ListItem", position: 1, name: "OPflow", item: `${site.url}${localePath(lang, "/")}` },
+        { "@type": "ListItem", position: 2, name: title, item: url },
       ],
     },
   ];
@@ -52,13 +71,13 @@ export function GuidePage({
   }
 
   return (
-    <>
+    <PageShell lang={lang}>
       <JsonLd data={jsonLd} />
       <Header />
-      <main className="flex-1 pt-12 pb-24 sm:pt-16">
+      <main id="main" className="flex-1 pt-12 pb-24 sm:pt-16">
         <Container>
           <p className="font-mono text-xs tracking-[0.14em] text-ink-soft uppercase">
-            <Link href="/" className="hover:text-ink">OPflow</Link> / Guide
+            <Link href={localePath(lang, "/")} className="hover:text-ink">OPflow</Link> / {t("Guide")}
           </p>
           <h1 className="mt-4 max-w-3xl font-serif text-[2.4rem] leading-[1.05] font-medium tracking-[-0.015em] sm:text-[3.2rem]">
             {title}
@@ -67,8 +86,8 @@ export function GuidePage({
 
           <div className="mt-14 grid gap-12 border-t-[1.5px] border-ink pt-10 lg:grid-cols-12 lg:gap-16">
             <aside className="lg:col-span-3">
-              <nav className="lg:sticky lg:top-24" aria-label="On this page">
-                <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">On this page</p>
+              <nav className="lg:sticky lg:top-24" aria-label={t("On this page")}>
+                <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">{t("On this page")}</p>
                 <ol className="mt-4 space-y-2 text-[15px]">
                   {sections.map((s, i) => (
                     <li key={s.id} className="flex gap-3">
@@ -82,7 +101,7 @@ export function GuidePage({
                     <li className="flex gap-3">
                       <span className="w-5 shrink-0 font-mono text-xs leading-6 text-ink-soft">{sections.length + 1}.</span>
                       <a href="#questions" className="text-ink-soft hover:text-ink hover:underline hover:underline-offset-4">
-                        Common questions
+                        {t("Common questions")}
                       </a>
                     </li>
                   )}
@@ -105,7 +124,7 @@ export function GuidePage({
                 <section id="questions" className="scroll-mt-24">
                   <h2>
                     <span className="mr-3 font-mono text-base text-fern">{sections.length + 1}.</span>
-                    Common questions
+                    {t("Common questions")}
                   </h2>
                   {faqs.map((f) => (
                     <div key={f.q}>
@@ -121,31 +140,31 @@ export function GuidePage({
           <div className="mt-20 border-t-[1.5px] border-ink pt-10">
             <h2 className="max-w-xl font-serif text-[1.8rem] leading-tight font-medium sm:text-[2.2rem]">{cta.heading}</h2>
             <p className="mt-3 max-w-xl text-ink-soft">{cta.text}</p>
-            <StoreButtons className="mt-6" />
+            <StoreButtons className="mt-6" lang={lang} />
           </div>
 
-          <nav className="mt-16 border-t border-rule pt-8" aria-label="More guides">
-            <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">More from OPflow</p>
+          <nav className="mt-16 border-t border-rule pt-8" aria-label={t("More from OPflow")}>
+            <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">{t("More from OPflow")}</p>
             <ul className="mt-4 flex flex-wrap gap-x-8 gap-y-3">
               {guidePages
                 .filter((p) => p.href !== path)
                 .map((p) => (
                   <li key={p.href}>
-                    <Link href={p.href} className="underline decoration-rule underline-offset-4 hover:decoration-fern">
-                      {p.label}
+                    <Link href={localePath(lang, p.href)} className="underline decoration-rule underline-offset-4 hover:decoration-fern">
+                      {t(p.label)}
                     </Link>
                   </li>
                 ))}
               <li>
-                <Link href="/" className="underline decoration-rule underline-offset-4 hover:decoration-fern">
-                  OPflow home
+                <Link href={localePath(lang, "/")} className="underline decoration-rule underline-offset-4 hover:decoration-fern">
+                  {t("OPflow home")}
                 </Link>
               </li>
             </ul>
           </nav>
         </Container>
       </main>
-      <Footer />
-    </>
+      <Footer lang={lang} />
+    </PageShell>
   );
 }

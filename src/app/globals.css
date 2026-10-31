@@ -1,9 +1,24 @@
 @import "tailwindcss";
 
+/*
+ * The rupee sign is the one non-Latin character the site uses. The web fonts only carry it in a separate
+ * "latin-ext" file, which would be downloaded for every font weight just for that sign, so it is taken from
+ * the device's own fonts instead. If none has it, the browser falls back to the web font as before.
+ */
+@font-face {
+  font-family: "Rupee";
+  src: local("Segoe UI"), local("Arial"), local("Roboto"), local("Helvetica Neue"), local("Noto Sans");
+  unicode-range: U+20B9;
+}
+
+/*
+ * Latin fonts first, then the Telugu ones (loaded only on the Telugu pages; elsewhere the fallback after the
+ * comma is used), so letters and numbers keep their Latin look and only Telugu text uses the Telugu fonts.
+ */
 @theme inline {
-  --font-sans: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-newsreader), Georgia, serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-sans: "Rupee", var(--font-plex), var(--font-telugu-sans, system-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Rupee", var(--font-newsreader), var(--font-telugu-serif, Georgia), Georgia, serif;
+  --font-mono: "Rupee", var(--font-plex-mono), var(--font-telugu-sans, system-ui), ui-monospace, monospace;
 }
 
 @theme {
@@ -98,6 +113,90 @@ html {
 body {
   background: var(--color-paper);
   color: var(--color-ink);
+}
+
+/*
+ * Telugu pages. Letter-spacing would pull Telugu's joined letters apart, Telugu has no capitals or true italic,
+ * and its letters are taller than Latin ones, so headings need more line height.
+ */
+:lang(te) * {
+  letter-spacing: normal !important;
+}
+
+:lang(te) .italic {
+  font-style: normal;
+}
+
+:lang(te) .uppercase {
+  text-transform: none;
+}
+
+:lang(te) h1,
+:lang(te) h2,
+:lang(te) h3 {
+  line-height: 1.3 !important;
+}
+
+/* Telugu letters are visibly larger than Latin ones at the same size, so headings are set a size smaller. */
+:lang(te) h1 {
+  font-size: 2.3rem !important;
+}
+
+:lang(te) h2 {
+  font-size: 1.75rem !important;
+}
+
+@media (min-width: 640px) {
+  :lang(te) h1 {
+    font-size: 2.8rem !important;
+  }
+
+  :lang(te) h2 {
+    font-size: 2.15rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  :lang(te) h1 {
+    font-size: 3.1rem !important;
+  }
+}
+
+/* Small labels would be hard to read in Telugu at their English sizes. The phone mock-up keeps its own sizes. */
+:lang(te) :where([class*="text-[11px]"], [class*="text-[10px]"], [class*="text-[9px]"], .text-xs):not([data-phone] *) {
+  font-size: 0.8125rem !important;
+}
+
+/* The OPflow loader (op-loader.tsx): ring, then P, then heartbeat, then fade, one second, repeating. */
+.op-loader path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.op-loader .op-ring { animation: op-ring 1s cubic-bezier(0.33, 1, 0.68, 1) infinite; }
+.op-loader .op-stem { animation: op-stem 1s cubic-bezier(0.33, 1, 0.68, 1) infinite; }
+.op-loader .op-bowl { animation: op-bowl 1s cubic-bezier(0.33, 1, 0.68, 1) infinite; }
+.op-loader .op-beat { animation: op-beat 1s cubic-bezier(0.33, 1, 0.68, 1) infinite; }
+.op-loader .op-fade { animation: op-fade 1s linear infinite; }
+
+@keyframes op-ring { 0% { stroke-dashoffset: 1; } 38%, 100% { stroke-dashoffset: 0; } }
+@keyframes op-stem { 0%, 20% { stroke-dashoffset: 1; } 44%, 100% { stroke-dashoffset: 0; } }
+@keyframes op-bowl { 0%, 36% { stroke-dashoffset: 1; } 62%, 100% { stroke-dashoffset: 0; } }
+@keyframes op-beat { 0%, 50% { stroke-dashoffset: 1; } 84%, 100% { stroke-dashoffset: 0; } }
+@keyframes op-fade { 0%, 86% { opacity: 1; } 100% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .op-loader path { stroke-dashoffset: 0; }
+}
+
+/* Keyboard focus is always visible: a ring in the page's green, or in light green on the dark sections. */
+:focus-visible {
+  outline: 2px solid var(--color-fern);
+  outline-offset: 3px;
+}
+
+.bg-forest :focus-visible {
+  outline-color: var(--color-leaf);
 }
 
 ::selection {

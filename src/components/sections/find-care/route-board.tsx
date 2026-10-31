@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
+import { useT } from "@/lib/i18n/context";
 import { doctors, specialties, type Doctor, type Result } from "./search-data";
 
 const MAX_DOCTORS = 4;
@@ -14,13 +15,17 @@ const kindLabel: Record<string, string> = {
 
 type Route = { kind: string; lit: string[]; list: Doctor[]; more: number; note?: string };
 
-function toRoute(result: Result, query: string): Route | null {
+type Translate = (text: string) => string;
+type TranslateWith = (text: string, ...args: (string | number)[]) => string;
+
+function toRoute(result: Result, query: string, t: Translate, tf: TranslateWith): Route | null {
   const cut = (all: Doctor[]) => ({ list: all.slice(0, MAX_DOCTORS), more: Math.max(0, all.length - MAX_DOCTORS) });
   switch (result.kind) {
     case "symptom":
       return { kind: "symptom", lit: result.specialties, ...cut(result.doctors), note: "A signpost to the right kind of doctor, not a diagnosis." };
     case "specialty": {
-      const byName = doctors.some((d) => d.name.toLowerCase().includes(query.trim().toLowerCase()));
+      const q = query.trim().toLowerCase();
+      const byName = doctors.some((d) => d.name.toLowerCase().includes(q) || t(d.name).toLowerCase().includes(q));
       return { kind: byName && query.trim().length > 2 ? "doctor" : "specialty", lit: [result.specialty], ...cut(result.doctors) };
     }
     case "hospital":
@@ -28,7 +33,7 @@ function toRoute(result: Result, query: string): Route | null {
         kind: "hospital",
         lit: [...new Set(result.doctors.map((d) => d.specialty))],
         ...cut(result.doctors),
-        note: `${result.hospital.area} · ${result.hospital.km} km · ${result.hospital.status}`,
+        note: `${t(result.hospital.area)} · ${tf("{0} km", result.hospital.km)} · ${t(result.hospital.status)}`,
       };
     default:
       return null;
@@ -43,7 +48,8 @@ type Line = { key: string; d: string; delay: number; a: Pt; b: Pt };
  * Lines are measured from the real elements, so they follow the layout at any width.
  */
 export function RouteBoard({ result, query }: { result: Result; query: string }) {
-  const route = toRoute(result, query);
+  const { t, tf } = useT();
+  const route = toRoute(result, query, t, tf);
   const boardRef = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const routeKey = route ? `${route.kind}|${route.lit.join()}|${route.list.map((d) => d.name).join()}` : result.kind;
@@ -98,21 +104,20 @@ export function RouteBoard({ result, query }: { result: Result; query: string })
     return (
       <div className="grid animate-flip-in gap-6 bg-alarm p-6 text-white sm:p-10 lg:grid-cols-12 lg:items-center">
         <div className="lg:col-span-8">
-          <p className="font-mono text-[11px] font-semibold tracking-[0.18em] uppercase">No booking for this one</p>
+          <p className="font-mono text-[11px] font-semibold tracking-[0.18em] uppercase">{t("No booking for this one")}</p>
           <p className="mt-3 font-serif text-[2rem] leading-[1.1] sm:text-[2.6rem]">
-            {cap(result.symptom)} can be serious. Don&apos;t wait for an OPD window.
+            {tf("{0} can be serious. Don't wait for an OPD window.", cap(t(result.symptom)))}
           </p>
           <p className="mt-3 max-w-xl text-white/85">
-            OPflow sends you to urgent care instead: call 112 or 108, or find an emergency department that&apos;s open
-            now.
+            {t("OPflow sends you to urgent care instead: call 112 or 108, or find an emergency department that's open now.")}
           </p>
         </div>
         <div className="flex flex-wrap gap-3 lg:col-span-4 lg:justify-end">
           <a href="tel:112" className="bg-white px-5 py-3 font-semibold text-alarm">
-            Call 112
+            {t("Call 112")}
           </a>
           <a href="#urgent" className="border-2 border-white px-5 py-3 font-semibold">
-            Urgent care ↓
+            {t("Urgent care ↓")}
           </a>
         </div>
       </div>
@@ -152,20 +157,20 @@ export function RouteBoard({ result, query }: { result: Result; query: string })
 
       {/* 1 · what you typed */}
       <div className="lg:self-center">
-        <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">You typed</p>
+        <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">{t("You typed")}</p>
         <div
           data-node="query"
           className={`mt-3 border-l-[3px] bg-paper px-5 py-4 transition-colors ${route ? "border-fern" : "border-rule"}`}
         >
           {route ? (
             <div key={routeKey} className="animate-fade-up">
-              <p className="font-mono text-[11px] tracking-[0.14em] text-fern uppercase">{kindLabel[route.kind]}</p>
+              <p className="font-mono text-[11px] tracking-[0.14em] text-fern uppercase">{t(kindLabel[route.kind])}</p>
               <p className="mt-1 font-serif text-[1.9rem] leading-tight break-words">{query.trim() ? cap(query.trim()) : "…"}</p>
-              {route.note && <p className="mt-2 text-sm text-ink-soft">{route.note}</p>}
+              {route.note && <p className="mt-2 text-sm text-ink-soft">{t(route.note)}</p>}
             </div>
           ) : (
             <p className="py-2 text-ink-soft">
-              {result.kind === "none" ? "Nothing matches that yet. Try a symptom like “cough”." : "Start typing above."}
+              {result.kind === "none" ? t("Nothing matches that yet. Try a symptom like “cough”.") : t("Start typing above.")}
             </p>
           )}
         </div>
@@ -173,11 +178,11 @@ export function RouteBoard({ result, query }: { result: Result; query: string })
 
       {/* 2 · department directory */}
       <div>
-        <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">Points you to</p>
+        <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">{t("Points you to")}</p>
         <div className="mt-3 bg-forest p-2 shadow-[0_20px_40px_-24px_rgba(11,58,46,0.6)]">
           <div className="flex items-center justify-between border-b border-mint/20 px-3 pt-1.5 pb-2.5 font-mono text-[10px] tracking-[0.18em] text-mint/70 uppercase">
-            <span>OPD directory</span>
-            <span>Room</span>
+            <span>{t("OPD directory")}</span>
+            <span>{t("Room")}</span>
           </div>
           <ul className="grid grid-cols-2 gap-px lg:grid-cols-1">
             {specialties.map((s, i) => {
@@ -192,7 +197,7 @@ export function RouteBoard({ result, query }: { result: Result; query: string })
                 >
                   <span className="flex min-w-0 items-center gap-2.5">
                     <span className={`size-1.5 shrink-0 transition-colors duration-500 ${lit ? "bg-fern" : "bg-mint/30"}`} aria-hidden="true" />
-                    <span className="truncate">{s}</span>
+                    <span className="truncate">{t(s)}</span>
                   </span>
                   <span className={`hidden font-mono text-xs sm:inline ${lit ? "text-fern" : ""}`}>{String(i + 1).padStart(2, "0")}</span>
                 </li>
@@ -204,7 +209,7 @@ export function RouteBoard({ result, query }: { result: Result; query: string })
 
       {/* 3 · doctors with their next window */}
       <div className="lg:self-center">
-        <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">Next open window</p>
+        <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">{t("Next open window")}</p>
         <ul className="mt-3 space-y-3">
           {route?.list.map((d, i) => (
             <li
@@ -214,23 +219,23 @@ export function RouteBoard({ result, query }: { result: Result; query: string })
               style={{ animationDelay: `${600 + i * 110}ms` }}
             >
               <span className="min-w-0">
-                <span className="block truncate font-medium">{d.name}</span>
-                <span className="block truncate text-sm text-ink-soft">{d.hospital}</span>
+                <span className="block truncate font-medium">{t(d.name)}</span>
+                <span className="block truncate text-sm text-ink-soft">{t(d.hospital)}</span>
               </span>
               <span className="shrink-0 bg-mint px-2.5 py-1.5 text-right">
-                <span className="block font-mono text-[9px] tracking-[0.14em] text-ink-soft uppercase">Next</span>
-                <span className="block text-[13px] font-medium whitespace-nowrap text-forest">{d.next}</span>
+                <span className="block font-mono text-[9px] tracking-[0.14em] text-ink-soft uppercase">{t("Next")}</span>
+                <span className="block text-[13px] font-medium whitespace-nowrap text-forest">{t(d.next)}</span>
               </span>
             </li>
           ))}
           {route && route.more > 0 && (
             <li className="animate-fade-up px-1 font-mono text-xs text-ink-soft" style={{ animationDelay: "1100ms" }}>
-              + {route.more} more in the app
+              {tf("+ {0} more in the app", route.more)}
             </li>
           )}
           {!route && (
             <li className="border border-dashed border-rule px-4 py-6 text-center text-sm text-ink-soft">
-              Doctors and their next window appear here.
+              {t("Doctors and their next window appear here.")}
             </li>
           )}
         </ul>

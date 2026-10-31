@@ -2,6 +2,8 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { PauseButton } from "@/components/site/pause-button";
+import { useT } from "@/lib/i18n/context";
+import { rich } from "@/lib/i18n/rich";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { TicketStrip } from "./ticket-strip";
@@ -17,6 +19,7 @@ const DELAY_MIN = 10;
 const states = ["Booked", "Waiting", "With the doctor", "Done"];
 
 export function LiveReadout({ intro }: { intro: ReactNode }) {
+  const { t, tf } = useT();
   const [ref, inView] = useInView<HTMLDivElement>(0.3);
   const [tick, setTick] = useState(0);
   const serving = FIRST + (tick % STEPS);
@@ -56,43 +59,42 @@ export function LiveReadout({ intro }: { intro: ReactNode }) {
 
       <div className="lg:col-span-5 lg:col-start-8 lg:pt-24">
         <div className="border-t border-mint/30 font-mono text-[15px]">
-          <Row label="Your token" value={String(MY_TOKEN)} strong />
-          <Row label="Now serving" value={String(serving)} live />
-          <Row label="Ahead of you" value={String(ahead)} live />
-          <Row label="Avg. consultation today" value={`~${AVG_MIN} min`} />
-          <Row label="Doctor running late" value={`${DELAY_MIN} min`} />
+          <Row label={t("Your token")} value={String(MY_TOKEN)} strong />
+          <Row label={t("Now serving")} value={String(serving)} live />
+          <Row label={t("Ahead of you")} value={String(ahead)} live />
+          <Row label={t("Avg. consultation today")} value={tf("~{0} min", AVG_MIN)} />
+          <Row label={t("Doctor running late")} value={tf("{0} min", DELAY_MIN)} />
         </div>
 
         <div className="mt-8">
           {stage === 3 ? (
-            <p className="font-serif text-3xl text-leaf">Visit done. Get well soon.</p>
+            <p className="font-serif text-3xl text-leaf">{t("Visit done. Get well soon.")}</p>
           ) : stage === 2 ? (
-            <p className="font-serif text-3xl text-leaf">It&apos;s your turn. Please go in to Room 4.</p>
+            <p className="font-serif text-3xl text-leaf">{t("It's your turn. Please go in to Room 4.")}</p>
           ) : ahead === 0 ? (
-            <p className="font-serif text-3xl text-leaf">You&apos;re next. Please be near Room 4.</p>
+            <p className="font-serif text-3xl text-leaf">{t("You're next. Please be near Room 4.")}</p>
           ) : (
             <>
               <p className="font-mono text-sm text-mint/75">
-                {ahead} × {AVG_MIN} min + {DELAY_MIN} min delay ≈ {estimate} min
+                {tf("{0} × {1} min + {2} min delay ≈ {3} min", ahead, AVG_MIN, DELAY_MIN, estimate)}
               </p>
               <p className="mt-2 font-serif text-4xl">
-                Approx. <span className="text-leaf">{lo}–{hi} min</span>
+                {rich(t("Approx. {0} min"), <span className="text-leaf">{lo}–{hi}</span>)}
               </p>
             </>
           )}
           <p className="mt-4 text-sm text-mint/75">
-            Shown as a range, because it&apos;s an estimate. It sharpens as OPflow learns how each OPD actually runs.
+            {t("Shown as a range, because it's an estimate. It sharpens as OPflow learns how each OPD actually runs.")}
           </p>
         </div>
       </div>
 
       <div className="border-t border-mint/20 pt-8 lg:col-span-12 lg:mt-6">
         <p className="font-mono text-[11px] tracking-[0.14em] text-mint/75 uppercase">
-          Your place in line · Token {MY_TOKEN}
+          {tf("Your place in line · Token {0}", MY_TOKEN)}
         </p>
         <p className="mt-3 max-w-2xl text-sm text-mint/60">
-          Each time the doctor finishes a visit, one ticket is torn off. The tickets between the front and yours are the
-          people ahead of you.
+          {t("Each time the doctor finishes a visit, one ticket is torn off. The tickets between the front and yours are the people ahead of you.")}
         </p>
         <div className="mt-8">
           <TicketStrip key={pass} first={FIRST} last={LAST} serving={serving} mine={MY_TOKEN} />
@@ -101,7 +103,7 @@ export function LiveReadout({ intro }: { intro: ReactNode }) {
 
       <div className="border-t border-mint/20 pt-8 lg:col-span-12">
         <p className="font-mono text-[11px] tracking-[0.14em] text-mint/75 uppercase">
-          What the doctor marks, what you see · Token {MY_TOKEN}
+          {tf("What the doctor marks, what you see · Token {0}", MY_TOKEN)}
         </p>
         <ol className="mt-5 grid grid-cols-2 gap-px bg-mint/15 sm:grid-cols-4">
           {states.map((s, i) => (
@@ -118,7 +120,7 @@ export function LiveReadout({ intro }: { intro: ReactNode }) {
                   i === stage ? "text-white" : i < stage ? "text-mint/80" : "text-mint/40"
                 }`}
               >
-                {s}
+                {t(s)}
               </span>
               <span
                 className={`absolute inset-x-0 bottom-0 h-[3px] origin-left bg-leaf transition-transform duration-700 ${i <= stage ? "scale-x-100" : "scale-x-0"}`}
@@ -127,7 +129,7 @@ export function LiveReadout({ intro }: { intro: ReactNode }) {
             </li>
           ))}
         </ol>
-        <p className="mt-3 text-sm text-mint/60">If you don&apos;t turn up, the doctor marks it as did not come.</p>
+        <p className="mt-3 text-sm text-mint/60">{t("If you don't turn up, the doctor marks it as did not come.")}</p>
       </div>
     </div>
   );

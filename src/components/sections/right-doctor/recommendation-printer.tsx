@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PauseButton } from "@/components/site/pause-button";
+import { useT } from "@/lib/i18n/context";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { RecommendationSlip, doctorTypes } from "./recommendation-slip";
@@ -10,6 +11,7 @@ const INTERVAL = 6500;
 
 /** Pick a type of doctor; the recommendation prints out of the slot. */
 export function RecommendationPrinter() {
+  const { t } = useT();
   const [ref, inView] = useInView<HTMLDivElement>(0.3);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -26,13 +28,13 @@ export function RecommendationPrinter() {
   return (
     <div ref={ref} className="mx-auto w-full max-w-[420px]">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">I need a…</p>
+        <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">{t("I need a…")}</p>
         {!reduced && <PauseButton paused={paused} onToggle={() => setPaused((p) => !p)} label="recommendation demo" />}
       </div>
-      <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label="Type of doctor">
-        {doctorTypes.map((t, i) => (
+      <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label={t("Type of doctor")}>
+        {doctorTypes.map((d, i) => (
           <button
-            key={t.id}
+            key={d.id}
             type="button"
             role="radio"
             aria-checked={i === index}
@@ -44,7 +46,7 @@ export function RecommendationPrinter() {
               i === index ? "border-ink bg-ink text-paper" : "border-rule bg-white text-ink hover:border-ink"
             }`}
           >
-            {t.label}
+            {t(d.label)}
           </button>
         ))}
       </div>
@@ -69,7 +71,7 @@ export function RecommendationPrinter() {
           </div>
         </div>
       </div>
-      <p className="-mt-4 text-center font-mono text-[11px] tracking-[0.12em] text-ink-soft uppercase">What you see after paying</p>
+      <p className="-mt-4 text-center font-mono text-[11px] tracking-[0.12em] text-ink-soft uppercase">{t("What you see after paying")}</p>
     </div>
   );
 }

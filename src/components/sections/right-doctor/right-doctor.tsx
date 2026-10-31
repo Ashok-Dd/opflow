@@ -1,4 +1,6 @@
 import { Container, Heading } from "@/components/site/primitives";
+import type { Lang } from "@/lib/i18n";
+import { getT } from "@/lib/i18n/server";
 import { RecommendationPrinter } from "./recommendation-printer";
 
 const steps = [
@@ -15,17 +17,17 @@ const rules = [
 ];
 
 /** "Find Your Right Doctor": the paid, one-time suggestion of up to three doctors near the patient. */
-export function RightDoctor() {
+export function RightDoctor({ lang }: { lang: Lang }) {
+  const { t } = getT(lang);
   return (
     <section id="right-doctor" className="border-t border-rule bg-white py-20 sm:py-28">
       <Container>
         <div className="grid items-start gap-14 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-6">
-            <p className="font-mono text-[11px] tracking-[0.14em] text-fern uppercase">Find your right doctor</p>
-            <Heading className="mt-3">Not sure whom to consult? Let OPflow suggest the right doctor.</Heading>
+            <p className="font-mono text-[11px] tracking-[0.14em] text-fern uppercase">{t("Find your right doctor")}</p>
+            <Heading className="mt-3">{t("Not sure whom to consult? Let OPflow suggest the right doctor.")}</Heading>
             <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-ink-soft">
-              We suggest doctors near you based on their qualifications, experience, training, areas of practice and
-              feedback from patients who visited them, and we tell you why for each one.
+              {t("We suggest doctors near you based on their qualifications, experience, training, areas of practice and feedback from patients who visited them, and we tell you why for each one.")}
             </p>
 
             <ol className="mt-10 grid border-t-[1.5px] border-ink sm:grid-cols-3">
@@ -35,19 +37,19 @@ export function RightDoctor() {
                   className="border-b border-rule py-5 sm:border-b-0 sm:py-6 sm:pr-5 sm:[&:not(:first-child)]:border-l sm:[&:not(:first-child)]:pl-5"
                 >
                   <span className="font-mono text-sm text-fern">{String(i + 1).padStart(2, "0")}</span>
-                  <p className="mt-2 font-serif text-[1.25rem] leading-snug">{s.title}</p>
-                  <p className="mt-1 text-[15px] text-ink-soft">{s.text}</p>
+                  <p className="mt-2 font-serif text-[1.25rem] leading-snug">{t(s.title)}</p>
+                  <p className="mt-1 text-[15px] text-ink-soft">{t(s.text)}</p>
                 </li>
               ))}
             </ol>
 
             <div className="mt-10 bg-paper p-6 sm:p-7">
-              <p className="font-serif text-[1.4rem] leading-tight">How we keep it honest</p>
+              <p className="font-serif text-[1.4rem] leading-tight">{t("How we keep it honest")}</p>
               <dl className="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-2">
                 {rules.map(([k, v]) => (
                   <div key={k} className="border-t border-ink/20 pt-3">
-                    <dt className="font-mono text-[11px] tracking-[0.14em] text-fern uppercase">{k}</dt>
-                    <dd className="mt-1.5 text-[15px] leading-snug text-ink-soft">{v}</dd>
+                    <dt className="font-mono text-[11px] tracking-[0.14em] text-fern uppercase">{t(k)}</dt>
+                    <dd className="mt-1.5 text-[15px] leading-snug text-ink-soft">{t(v)}</dd>
                   </div>
                 ))}
               </dl>

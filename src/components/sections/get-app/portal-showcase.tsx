@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { PauseButton } from "@/components/site/pause-button";
+import { useT } from "@/lib/i18n/context";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { PhoneFrame } from "./phone-frame";
@@ -32,6 +33,7 @@ const portals: Record<"patient" | "doctor", { label: string; screens: Screen[] }
 const INTERVAL = 4500;
 
 export function PortalShowcase({ intro, footer }: { intro: ReactNode; footer: ReactNode }) {
+  const { t } = useT();
   const [portal, setPortal] = useState<"patient" | "doctor">("patient");
   const [index, setIndex] = useState(0);
   const [ref, inView] = useInView<HTMLDivElement>(0.3);
@@ -68,7 +70,7 @@ export function PortalShowcase({ intro, footer }: { intro: ReactNode; footer: Re
                 portal === p ? "border-ink text-ink" : "border-transparent text-ink-soft hover:text-ink"
               }`}
             >
-              {portals[p].label}
+              {t(portals[p].label)}
             </button>
           ))}
         </div>
@@ -86,9 +88,9 @@ export function PortalShowcase({ intro, footer }: { intro: ReactNode; footer: Re
               >
                 <span className={`font-mono text-sm ${i === index ? "text-forest" : "text-ink-soft"}`}>0{i + 1}</span>
                 <span>
-                  <span className={`block font-serif text-xl ${i === index ? "" : "text-ink-soft"}`}>{s.title}</span>
+                  <span className={`block font-serif text-xl ${i === index ? "" : "text-ink-soft"}`}>{t(s.title)}</span>
                   <span className="mt-0.5 block text-[15px] text-ink-soft">
-                    {s.text}
+                    {t(s.text)}
                   </span>
                 </span>
                 {i === index && autoplay && (

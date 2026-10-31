@@ -1,3 +1,7 @@
+"use client";
+
+import { useT } from "@/lib/i18n/context";
+
 export type Pick = { name: string; detail: string; reasons: string[] };
 export type DoctorType = { id: string; label: string; heading: string; picks: Pick[] };
 
@@ -91,28 +95,29 @@ export const doctorTypes: DoctorType[] = [
 
 /** What the patient gets after paying: a printed recommendation that feeds out of the slot. */
 export function RecommendationSlip({ type }: { type: DoctorType }) {
+  const { t, tf } = useT();
   return (
     <div className="bg-white px-6 pt-6 pb-6 shadow-[0_1px_0_var(--color-rule),0_18px_30px_-18px_rgba(23,34,29,0.35)]">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-dashed border-ink/40 pb-3">
-        <span className="text-[15px] font-semibold">Your OPflow recommendation</span>
-        <span className="font-mono text-[13px] text-ink-soft">₹99 · Paid</span>
+        <span className="text-[15px] font-semibold">{t("Your OPflow recommendation")}</span>
+        <span className="font-mono text-[13px] text-ink-soft">{t("₹99 · Paid")}</span>
       </div>
       <p className="border-b border-dashed border-ink/40 py-3 font-mono text-[12px] tracking-[0.08em] text-ink-soft uppercase">
-        {type.heading} · near Bhimavaram
+        {tf("{0} · near Bhimavaram", t(type.heading))}
       </p>
 
       {type.picks.map((p, i) => (
         <div key={p.name} className="relative border-b border-dashed border-ink/40 py-4">
-          <p className="font-mono text-[11px] tracking-[0.14em] text-fern uppercase">Suggestion {i + 1}</p>
-          <p className="mt-1 pr-24 text-lg font-semibold">{p.name}</p>
-          <p className="text-[14px] text-ink-soft">{p.detail}</p>
+          <p className="font-mono text-[11px] tracking-[0.14em] text-fern uppercase">{tf("Suggestion {0}", i + 1)}</p>
+          <p className="mt-1 pr-24 text-lg font-semibold">{t(p.name)}</p>
+          <p className="text-[14px] text-ink-soft">{t(p.detail)}</p>
           <ul className="mt-3 space-y-1.5 text-[14px]">
             {p.reasons.map((r) => (
               <li key={r} className="flex gap-2">
                 <span className="text-fern" aria-hidden="true">
                   ✓
                 </span>
-                {r}
+                {t(r)}
               </li>
             ))}
           </ul>
@@ -121,13 +126,13 @@ export function RecommendationSlip({ type }: { type: DoctorType }) {
             style={{ animationDelay: `${1350 + i * 260}ms` }}
             aria-hidden="true"
           >
-            Recommended
+            {t("Recommended")}
           </span>
         </div>
       ))}
 
       <p className="pt-4 text-[13px] leading-relaxed text-ink-soft">
-        This is a recommendation, not a guarantee of treatment outcome. Book any of these doctors in the app.
+        {t("This is a recommendation, not a guarantee of treatment outcome. Book any of these doctors in the app.")}
       </p>
     </div>
   );

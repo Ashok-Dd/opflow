@@ -1,5 +1,7 @@
 import { Container, Heading } from "@/components/site/primitives";
 import { Reveal } from "@/components/site/reveal";
+import type { Lang } from "@/lib/i18n";
+import { getT } from "@/lib/i18n/server";
 import { RuleCard } from "./rule-card";
 
 const rules = [
@@ -11,14 +13,15 @@ const rules = [
   { title: "Make doctors take every patient online.", text: "Walk-ins stay. The doctor sets the split, every day if they like.", tilt: 0.6 },
 ];
 
-export function Promises() {
+export function Promises({ lang }: { lang: Lang }) {
+  const { t } = getT(lang);
   return (
     <section id="promises" className="border-t border-rule bg-paper-deep/60 py-20 sm:py-28">
       <Container>
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <Heading className="max-w-xl">Six things OPflow will never do.</Heading>
+          <Heading className="max-w-xl">{t("Six things OPflow will never do.")}</Heading>
           <p className="max-w-sm text-ink-soft">
-            Written down so patients, doctors and our own team can hold us to them.
+            {t("Written down so patients, doctors and our own team can hold us to them.")}
           </p>
         </div>
 
@@ -26,7 +29,7 @@ export function Promises() {
           {rules.map((r, i) => (
             <li key={r.title}>
               <Reveal delay={(i % 3) * 110}>
-                <RuleCard index={i + 1} title={r.title} text={r.text} tilt={r.tilt} />
+                <RuleCard index={i + 1} title={r.title} text={r.text} tilt={r.tilt} lang={lang} />
               </Reveal>
             </li>
           ))}

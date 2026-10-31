@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 export function PhoneFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="relative mx-auto h-[600px] w-[292px] shrink-0 rounded-[48px] bg-ink p-[10px] shadow-[0_40px_60px_-30px_rgba(11,58,46,0.55),inset_0_0_0_1.5px_#3a4640]">
+    <div data-phone className="relative mx-auto h-[600px] w-[292px] shrink-0 rounded-[48px] bg-ink p-[10px] shadow-[0_40px_60px_-30px_rgba(11,58,46,0.55),inset_0_0_0_1.5px_#3a4640]">
       {/* side buttons */}
       <span className="absolute top-28 -left-[3px] h-10 w-[3px] rounded-l bg-ink" aria-hidden="true" />
       <span className="absolute top-40 -left-[3px] h-16 w-[3px] rounded-l bg-ink" aria-hidden="true" />

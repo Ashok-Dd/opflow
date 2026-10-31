@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { localePath } from "@/lib/i18n";
+import { useT } from "@/lib/i18n/context";
 import { useActiveSection } from "@/lib/use-active-section";
+import { LanguageSwitch } from "./language-switch";
 import { Logo } from "./logo";
 import { Container } from "./primitives";
 import { SectionLink } from "./section-link";
@@ -19,6 +22,7 @@ const links = [
 const sectionIds = links.map((l) => l.id);
 
 export function Header() {
+  const { lang, t } = useT();
   const active = useActiveSection(sectionIds);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -37,11 +41,11 @@ export function Header() {
       }`}
     >
       <Container className="flex h-16 items-center justify-between gap-6">
-        <Link href="/" aria-label="OPflow, back to top">
+        <Link href={localePath(lang, "/")} aria-label={t("OPflow, back to top")}>
           <Logo />
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
+        <nav className="hidden items-center gap-8 md:flex" aria-label={t("Main")}>
           {links.map((l) => (
             <SectionLink
               key={l.id}
@@ -50,66 +54,69 @@ export function Header() {
                 active === l.id ? "text-ink underline decoration-fern decoration-2" : "text-ink-soft"
               }`}
             >
-              {l.label}
+              {t(l.label)}
             </SectionLink>
           ))}
         </nav>
 
-        <SectionLink
-          id="get-the-app"
-          className="hidden rounded-[4px] bg-ink px-4 py-2.5 text-sm font-medium text-paper hover:bg-forest md:inline-block"
-        >
-          Get the app
-        </SectionLink>
+        <div className="flex items-center gap-3">
+          <LanguageSwitch />
+          <SectionLink
+            id="get-the-app"
+            className="hidden rounded-[4px] bg-ink px-4 py-2.5 text-sm font-medium text-paper hover:bg-forest md:inline-block"
+          >
+            {t("Get the app")}
+          </SectionLink>
 
-        <button
-          type="button"
-          className="-mr-2 p-2 md:hidden"
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span className="relative block h-3 w-6" aria-hidden="true">
-            <span
-              className={`absolute left-0 h-[1.5px] w-6 bg-ink transition-transform ${open ? "top-1.5 rotate-45" : "top-0"}`}
-            />
-            <span
-              className={`absolute left-0 h-[1.5px] w-6 bg-ink transition-transform ${open ? "top-1.5 -rotate-45" : "top-3"}`}
-            />
-          </span>
-        </button>
+          <button
+            type="button"
+            className="-mr-2 p-2 md:hidden"
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            aria-label={open ? t("Close menu") : t("Open menu")}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span className="relative block h-3 w-6" aria-hidden="true">
+              <span
+                className={`absolute left-0 h-[1.5px] w-6 bg-ink transition-transform ${open ? "top-1.5 rotate-45" : "top-0"}`}
+              />
+              <span
+                className={`absolute left-0 h-[1.5px] w-6 bg-ink transition-transform ${open ? "top-1.5 -rotate-45" : "top-3"}`}
+              />
+            </span>
+          </button>
+        </div>
       </Container>
 
       <nav
         id="mobile-nav"
-        aria-label="Mobile"
+        aria-label={t("Mobile")}
         className={`grid border-rule bg-paper transition-[grid-template-rows] duration-300 md:hidden ${
           open ? "grid-rows-[1fr] border-b" : "grid-rows-[0fr]"
         }`}
       >
         {/* Grows to its content height; scrolls if the screen is shorter than the menu. */}
         <div className="max-h-[calc(100dvh-4rem)] min-h-0 overflow-y-auto overscroll-contain">
-        <Container className="pb-5">
-          {links.map((l) => (
+          <Container className="pb-5">
+            {links.map((l) => (
+              <SectionLink
+                key={l.id}
+                id={l.id}
+                onNavigate={() => setOpen(false)}
+                className="flex items-center justify-between border-b border-rule py-3.5 font-serif text-xl"
+              >
+                {t(l.label)}
+                <span className="font-sans text-ink-soft" aria-hidden="true">→</span>
+              </SectionLink>
+            ))}
             <SectionLink
-              key={l.id}
-              id={l.id}
+              id="get-the-app"
               onNavigate={() => setOpen(false)}
-              className="flex items-center justify-between border-b border-rule py-3.5 font-serif text-xl"
+              className="mt-5 block rounded-[4px] bg-ink py-3 text-center font-medium text-paper"
             >
-              {l.label}
-              <span className="font-sans text-ink-soft" aria-hidden="true">→</span>
+              {t("Get the app")}
             </SectionLink>
-          ))}
-          <SectionLink
-            id="get-the-app"
-            onNavigate={() => setOpen(false)}
-            className="mt-5 block rounded-[4px] bg-ink py-3 text-center font-medium text-paper"
-          >
-            Get the app
-          </SectionLink>
-        </Container>
+          </Container>
         </div>
       </nav>
     </header>

@@ -1,0 +1,28 @@
+# OPflow
+
+> OPflow is an OPD (outpatient) appointment booking app for clinics and hospitals in India. Patients find a doctor by specialty, symptom or hospital, book an hour-long consultation window, pay online and follow the doctor's live token queue from their phone. It works in English and Telugu. OPflow is a booking platform, not a healthcare provider or an emergency service, and it does not give medical advice.
+
+OPflow is starting small: one doctor, then one clinic, then a few more. Clinics appear in the app as they join.
+
+## Pages
+
+- [Home](https://opflow.in/): what OPflow is, how booking and the live queue work, and answers to common questions.
+- [How to book an OPD appointment online](https://opflow.in/opd-appointment-booking): what OPD and OP mean, the booking steps, rescheduling and refunds.
+- [Live OPD token queue](https://opflow.in/live-opd-token-queue): how the token queue works and how OPflow shows it on a phone.
+- [OPD software for doctors and clinics](https://opflow.in/for-doctors): what doctors and clinics get, what it costs, and how to start.
+
+## Telugu (తెలుగు)
+
+Every page above also exists in Telugu at the same address with /te in front, for example https://opflow.in/te and https://opflow.in/te/for-doctors. English is the legally binding version of the policy pages.
+
+## Policies
+
+- [Rescheduling and refunds](https://opflow.in/refunds): patients can reschedule once, free, up to 2 hours before their window; if a doctor or hospital cancels, the patient gets a 100% refund.
+- [Privacy policy](https://opflow.in/privacy)
+- [Terms and conditions](https://opflow.in/terms)
+- [Medical disclaimer](https://opflow.in/disclaimer)
+- [Contact](https://opflow.in/contact): info@opflow.in
+
+## Emergencies
+
+For a life-threatening emergency, call 112 or 108. OPflow's urgent-care section shows first-aid steps based on WHO guidance, which work without internet inside the app.

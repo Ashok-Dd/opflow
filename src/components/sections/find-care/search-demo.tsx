@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { PauseButton } from "@/components/site/pause-button";
+import { useT } from "@/lib/i18n/context";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { RouteBoard } from "./route-board";
@@ -18,10 +19,12 @@ const demo = [
 const tryThese = ["Skin rash", "Pediatrics", "City Care", "Back pain", "Dr. Priya"];
 
 export function SearchDemo() {
-  const [ref, inView] = useInView<HTMLDivElement>(0.35);
+  const { t } = useT();
+  const [ref, inView] = useInView<HTMLDivElement>(0.1);
   const reduced = useReducedMotion();
-  const [query, setQuery] = useState(reduced ? demo[0].text : "");
-  const [hint, setHint] = useState(demo[0].hint);
+  // Starts with the first example already in the box, so the section never shows its empty state.
+  const [query, setQuery] = useState<string>(t(demo[0].text));
+  const [hint, setHint] = useState(t(demo[0].hint));
   const [stopped, setStopped] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const autoplay = inView && !stopped && !reduced;
@@ -32,12 +35,18 @@ export function SearchDemo() {
     let cancelled = false;
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
     (async () => {
+      let first = true;
       for (let n = 0; !cancelled; n = (n + 1) % demo.length) {
-        const { text, hint } = demo[n];
-        setHint(hint);
-        for (let i = 1; i <= text.length && !cancelled; i++) {
-          setQuery(text.slice(0, i));
-          await sleep(95);
+        const text = t(demo[n].text);
+        setHint(t(demo[n].hint));
+        if (first) {
+          setQuery(text); // already showing: hold it, then carry on from the next example
+          first = false;
+        } else {
+          for (let i = 1; i <= text.length && !cancelled; i++) {
+            setQuery(text.slice(0, i));
+            await sleep(95);
+          }
         }
         await sleep(3800);
         for (let i = text.length - 1; i >= 0 && !cancelled; i--) {
@@ -50,7 +59,7 @@ export function SearchDemo() {
     return () => {
       cancelled = true;
     };
-  }, [autoplay]);
+  }, [autoplay, t]);
 
   const takeOver = (value: string) => {
     setStopped(true);
@@ -64,7 +73,7 @@ export function SearchDemo() {
           <circle cx="8.5" cy="8.5" r="5.5" />
           <path d="m13 13 4 4" strokeLinecap="round" />
         </svg>
-        <span className="sr-only">Search doctors, symptoms or hospitals</span>
+        <span className="sr-only">{t("Search doctors, symptoms or hospitals")}</span>
         <input
           ref={inputRef}
           value={query}
@@ -72,7 +81,7 @@ export function SearchDemo() {
           onFocus={() => {
             if (!stopped) takeOver("");
           }}
-          placeholder="Fever, ENT, City Care…"
+          placeholder={t("Fever, ENT, City Care…")}
           className="min-w-0 flex-1 bg-transparent font-serif text-[1.7rem] leading-none outline-none placeholder:text-ink-soft/50 sm:text-[2.4rem]"
         />
         {autoplay && (
@@ -86,21 +95,21 @@ export function SearchDemo() {
       </label>
 
       <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-        <span className="mr-1 text-ink-soft">Try</span>
-        {tryThese.map((t) => (
+        <span className="mr-1 text-ink-soft">{t("Try")}</span>
+        {tryThese.map((chip) => (
           <button
-            key={t}
+            key={chip}
             type="button"
             onClick={() => {
               // Focus first: focusing clears the demo text, then the chip's text goes in.
               inputRef.current?.focus();
-              takeOver(t);
+              takeOver(t(chip));
             }}
             className={`border px-3 py-1.5 transition-colors ${
-              query === t ? "border-ink bg-ink text-paper" : "border-rule bg-white hover:border-ink"
+              query === t(chip) ? "border-ink bg-ink text-paper" : "border-rule bg-white hover:border-ink"
             }`}
           >
-            {t}
+            {t(chip)}
           </button>
         ))}
         {!reduced && !stopped && (
@@ -109,7 +118,7 @@ export function SearchDemo() {
       </div>
 
       <div className="mt-14 flex min-h-[480px] flex-col justify-center" aria-live={stopped ? "polite" : "off"}>
-        <RouteBoard result={search(query)} query={query} />
+        <RouteBoard result={search(query, t)} query={query} />
       </div>
     </div>
   );

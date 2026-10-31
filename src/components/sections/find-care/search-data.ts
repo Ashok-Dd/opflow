@@ -51,24 +51,29 @@ export type Result =
   | { kind: "hospital"; hospital: Hospital; doctors: Doctor[] }
   | { kind: "none" };
 
-export function search(raw: string): Result {
+/**
+ * What the typed text points to. `t` translates names, so a Telugu visitor can type Telugu ("జ్వరం") and an
+ * English name still works on either page. Results always hold the English names; the display translates them.
+ */
+export function search(raw: string, t: (text: string) => string = (s) => s): Result {
   const q = raw.trim().toLowerCase();
   if (q.length < 2) return { kind: "empty" };
+  const names = (s: string) => [s.toLowerCase(), t(s).toLowerCase()];
 
-  const sym = Object.keys(symptoms).find((s) => s.startsWith(q) || (q.length > 3 && s.includes(q)));
+  const sym = Object.keys(symptoms).find((s) => names(s).some((n) => n.startsWith(q) || (q.length > 3 && n.includes(q))));
   if (sym) {
     const target = symptoms[sym];
     if (target === "urgent") return { kind: "urgent", symptom: sym };
     return { kind: "symptom", symptom: sym, specialties: target, doctors: doctors.filter((d) => target.includes(d.specialty)) };
   }
 
-  const spec = specialties.find((s) => s.toLowerCase().startsWith(q) || s.toLowerCase().includes(q));
+  const spec = specialties.find((s) => names(s).some((n) => n.startsWith(q) || n.includes(q)));
   if (spec) return { kind: "specialty", specialty: spec, doctors: doctors.filter((d) => d.specialty === spec) };
 
-  const hosp = hospitals.find((h) => `${h.name} ${h.area}`.toLowerCase().includes(q));
+  const hosp = hospitals.find((h) => [...names(h.name), ...names(h.area)].some((n) => n.includes(q)));
   if (hosp) return { kind: "hospital", hospital: hosp, doctors: doctors.filter((d) => d.hospital === hosp.name) };
 
-  const doc = doctors.filter((d) => d.name.toLowerCase().includes(q));
+  const doc = doctors.filter((d) => names(d.name).some((n) => n.includes(q)));
   if (doc.length) return { kind: "specialty", specialty: doc[0].specialty, doctors: doc };
 
   return { kind: "none" };

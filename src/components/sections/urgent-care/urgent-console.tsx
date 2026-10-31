@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PauseButton } from "@/components/site/pause-button";
+import { useT } from "@/lib/i18n/context";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { situations } from "./urgent-data";
@@ -10,6 +11,7 @@ const INTERVAL = 7000;
 
 /** Pick what's happening; the app's first-aid page and what's open nearby follow. */
 export function UrgentConsole() {
+  const { lang, t, tf } = useT();
   const [ref, inView] = useInView<HTMLDivElement>(0.25);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -31,13 +33,13 @@ export function UrgentConsole() {
     <div ref={ref} className="grid gap-8 lg:grid-cols-12 lg:gap-12">
       <div className="min-w-0 lg:col-span-5">
         <div className="flex items-center justify-between">
-          <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">What&apos;s happening?</p>
+          <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">{t("What's happening?")}</p>
           {!reduced && <PauseButton paused={paused} onToggle={() => setPaused((p) => !p)} label="urgent care demo" />}
         </div>
 
         <div
           role="tablist"
-          aria-label="Emergency situations"
+          aria-label={t("Emergency situations")}
           aria-orientation="vertical"
           className="-mx-4 mt-3 flex snap-x gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:px-0 lg:mt-4 lg:block lg:overflow-visible lg:border-t-[1.5px] lg:border-ink lg:pb-0"
         >
@@ -69,8 +71,8 @@ export function UrgentConsole() {
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="flex-1">
-                  <span className="block text-sm font-medium whitespace-nowrap lg:text-[17px]">{item.title}</span>
-                  <span className="hidden text-[14px] text-ink-soft lg:block">{item.line}</span>
+                  <span className="block text-sm font-medium whitespace-nowrap lg:text-[17px]">{t(item.title)}</span>
+                  <span className="hidden text-[14px] text-ink-soft lg:block">{t(item.line)}</span>
                 </span>
                 <span
                   className={`hidden text-alarm transition-[opacity,translate] lg:inline ${active ? "translate-x-0 opacity-100" : "-translate-x-1 opacity-0"}`}
@@ -92,9 +94,9 @@ export function UrgentConsole() {
         </div>
 
         <div className="mt-8 hidden border-l-2 border-fern pl-4 lg:block">
-          <p className="font-serif text-[1.3rem] leading-snug">Availability is declared, never guessed.</p>
+          <p className="font-serif text-[1.3rem] leading-snug">{t("Availability is declared, never guessed.")}</p>
           <p className="mt-2 text-[15px] text-ink-soft">
-            A doctor appears as available only if they switched it on themselves: available now, or until a set time.
+            {t("A doctor appears as available only if they switched it on themselves: available now, or until a set time.")}
           </p>
         </div>
       </div>
@@ -108,54 +110,55 @@ export function UrgentConsole() {
         >
           {/* header strip */}
           <div className="flex items-center justify-between gap-4 border-b border-rule px-5 py-3 sm:px-7">
-            <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">First aid · In the app</p>
+            <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">{t("First aid · In the app")}</p>
             <p className="flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] text-fern uppercase">
               <span className="size-1.5 rounded-full bg-fern" aria-hidden="true" />
-              Works offline
+              {t("Works offline")}
             </p>
           </div>
 
           <div key={s.id} className="px-5 pt-6 pb-6 sm:px-7">
             <h3 className="animate-fade-up font-serif text-[2rem] leading-none" style={next()}>
-              {s.title}
+              {t(s.title)}
             </h3>
 
             <div className="mt-5 flex animate-fade-up flex-col gap-4 bg-alarm p-4 text-white sm:flex-row sm:items-center sm:justify-between" style={next()}>
               <div>
-                <p className="font-mono text-[11px] font-semibold tracking-[0.16em] uppercase">Call 108 now if</p>
-                <p className="mt-1 text-[15px] leading-snug">{s.callNow}</p>
+                <p className="font-mono text-[11px] font-semibold tracking-[0.16em] uppercase">{t("Call 108 now if")}</p>
+                <p className="mt-1 text-[15px] leading-snug">{t(s.callNow)}</p>
               </div>
               <a
                 href="tel:108"
                 className="shrink-0 self-start border-2 border-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-white hover:text-alarm sm:self-auto"
               >
-                Call 108
+                {t("Call 108")}
               </a>
             </div>
 
             <div className="mt-6 grid gap-6 sm:grid-cols-2 sm:gap-8">
               <div>
                 <p className="animate-fade-up border-b-[1.5px] border-ink pb-2 font-mono text-[11px] tracking-[0.16em] text-fern uppercase" style={next()}>
-                  Do
+                  {t("Do")}
                 </p>
                 <ul>
                   {s.dos.map((d) => (
                     <li key={d} className="flex animate-fade-up gap-3 border-b border-rule py-2.5 text-[15px] leading-snug" style={next()}>
                       <span className="mt-0.5 font-semibold text-fern" aria-hidden="true">✓</span>
-                      {d}
+                      {t(d)}
                     </li>
                   ))}
                 </ul>
               </div>
               <div>
                 <p className="animate-fade-up border-b-[1.5px] border-ink pb-2 font-mono text-[11px] tracking-[0.16em] text-alarm uppercase" style={next()}>
-                  Don&apos;t
+                  {t("Don't")}
                 </p>
                 <ul>
                   {s.donts.map((d) => (
                     <li key={d} className="flex animate-fade-up gap-3 border-b border-rule py-2.5 text-[15px] leading-snug" style={next()}>
                       <span className="mt-0.5 font-semibold text-alarm" aria-hidden="true">✕</span>
-                      {sentence(d.replace(/^Do not /, ""))}
+                      {/* English drops "Do not " because the column is headed "Don't"; Telugu keeps whole sentences. */}
+                      {lang === "en" ? sentence(d.replace(/^Do not /, "")) : t(d)}
                     </li>
                   ))}
                 </ul>
@@ -163,26 +166,26 @@ export function UrgentConsole() {
             </div>
 
             <p className="mt-4 animate-fade-up text-[13px] text-ink-soft" style={next()}>
-              Based on: {s.source}
+              {tf("Based on: {0}", t(s.source))}
             </p>
 
             <div className="mt-7 animate-fade-up" style={next()}>
-              <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">Open near you · example</p>
+              <p className="font-mono text-[11px] tracking-[0.14em] text-ink-soft uppercase">{t("Open near you · example")}</p>
               <ul className="mt-2 border-t-[1.5px] border-ink">
                 {s.nearby.map((p) => (
                   <li key={p.name + p.role} className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-rule py-3">
                     <div className="min-w-0">
-                      <p className="font-medium">{p.name}</p>
-                      <p className="text-sm text-ink-soft">{p.role}</p>
+                      <p className="font-medium">{t(p.name)}</p>
+                      <p className="text-sm text-ink-soft">{t(p.role)}</p>
                     </div>
                     <div className="flex items-center gap-4">
                       <p className={`text-sm font-medium sm:text-right ${p.now ? "text-fern" : "text-amber"}`}>
-                        {p.status}
-                        <span className="block font-mono text-xs font-normal text-ink-soft">{p.km} km</span>
+                        {t(p.status)}
+                        <span className="block font-mono text-xs font-normal text-ink-soft">{tf("{0} km", p.km)}</span>
                       </p>
                       <span className="flex gap-1.5 text-xs font-semibold" aria-hidden="true">
-                        <span className="bg-alarm px-2.5 py-1.5 text-white">Call</span>
-                        <span className="border border-ink/25 px-2.5 py-1.5">Directions</span>
+                        <span className="bg-alarm px-2.5 py-1.5 text-white">{t("Call")}</span>
+                        <span className="border border-ink/25 px-2.5 py-1.5">{t("Directions")}</span>
                       </span>
                     </div>
                   </li>
@@ -192,12 +195,12 @@ export function UrgentConsole() {
           </div>
         </article>
         <p className="mt-4 text-center font-mono text-[11px] tracking-[0.12em] text-ink-soft uppercase">
-          First aid steps, then what&apos;s open right now
+          {t("First aid steps, then what's open right now")}
         </p>
         <div className="mt-8 border-l-2 border-fern pl-4 lg:hidden">
-          <p className="font-serif text-[1.3rem] leading-snug">Availability is declared, never guessed.</p>
+          <p className="font-serif text-[1.3rem] leading-snug">{t("Availability is declared, never guessed.")}</p>
           <p className="mt-2 text-[15px] text-ink-soft">
-            A doctor appears as available only if they switched it on themselves: available now, or until a set time.
+            {t("A doctor appears as available only if they switched it on themselves: available now, or until a set time.")}
           </p>
         </div>
       </div>

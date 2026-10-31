@@ -53,16 +53,15 @@ export const site = {
   rescheduleCutoff: "2 hours before your window starts",
 
   legalUpdated: "28 September 2026",
+  legalUpdatedIso: "2026-09-28",
+  legalUpdatedTe: "2026 సెప్టెంబర్ 28",
 } as const;
 
 /** Plain-language guide pages that target what people search for. Listed in the footer and the sitemap. */
 export const guidePages = [
-  {
-    href: "/opd-appointment-booking",
-    label: "How to book an OPD appointment online",
-  },
-  { href: "/live-opd-token-queue", label: "Live OPD token queue" },
-  { href: "/for-doctors", label: "OPD software for doctors and clinics" },
+  { href: "/opd-appointment-booking", label: "How to book an OPD appointment online", updated: "2026-10-31" },
+  { href: "/live-opd-token-queue", label: "Live OPD token queue", updated: "2026-10-31" },
+  { href: "/for-doctors", label: "OPD software for doctors and clinics", updated: "2026-10-31" },
 ] as const;
 
 export const legalPages = [
